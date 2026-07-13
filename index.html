@@ -183,10 +183,87 @@
   .aud audio{width:100%;height:34px;display:block}
   .aud .pending{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--med);font-weight:600}
   .aud .pending::before{content:"⧗";font-size:14px}
+  /* ===== AGI://LIVE — interactive terminal hub ===== */
+  .tab.live{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.4px;color:var(--cyan)}
+  .tab.live:hover{color:#8eeafb}
+  .tab.live.active{color:#fff;border-bottom-color:var(--cyan)}
+  .term{position:relative;background:#04060b;border:1px solid var(--line2);border-radius:14px;overflow:hidden;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    box-shadow:0 0 70px rgba(34,211,238,.07);transition:box-shadow .6s}
+  #agilive.upg .term{box-shadow:0 0 70px rgba(255,46,136,.16)}
+  .term::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 1px,transparent 1px 3px)}
+  .term.bo::before{content:"";position:absolute;inset:0;background:#000;z-index:9;animation:bo .95s ease forwards}
+  @keyframes bo{0%{opacity:0}15%{opacity:1}70%{opacity:1}100%{opacity:0}}
+  .t-head{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);
+    background:rgba(21,25,37,.55);font-size:12px;color:var(--dim)}
+  .t-head .dots{display:flex;gap:6px}
+  .t-head .dots i{width:10px;height:10px;border-radius:50%;background:#232a3e}
+  .t-head .ttl{color:var(--mut);font-weight:700;letter-spacing:.6px}
+  .t-mode{margin-left:auto;font-weight:800;font-size:11px;letter-spacing:1px;padding:3px 10px;border-radius:4px;
+    color:var(--cyan);border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.08);transition:.4s}
+  #agilive.upg .t-mode{color:#ff9ec4;border-color:rgba(255,46,136,.45);background:rgba(255,46,136,.1)}
+  .t-body{display:grid;grid-template-columns:212px 1fr;min-height:380px}
+  .t-side{border-right:1px solid var(--line);padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .t-face{width:128px;height:128px;border-radius:50%;object-fit:cover;object-position:top;
+    border:2px solid rgba(34,211,238,.5);transition:border-color .5s,box-shadow .25s}
+  .t-face.talk{box-shadow:0 0 36px rgba(34,211,238,.45)}
+  #agilive.upg .t-face{border-color:rgba(255,46,136,.6)}
+  #agilive.upg .t-face.talk{box-shadow:0 0 36px rgba(255,46,136,.5)}
+  .viz{display:flex;align-items:flex-end;gap:3px;height:34px}
+  .viz i{width:5px;height:3px;background:var(--cyan);border-radius:2px;opacity:.85;transition:background .4s}
+  #agilive.upg .viz i{background:var(--pink)}
+  .t-stats{width:100%;font-size:11px;color:var(--dim);line-height:1.9;border-top:1px dashed var(--line);padding-top:10px}
+  .t-stats b{color:var(--mut);float:right;font-weight:600}
+  .t-log{padding:16px 18px;font-size:13px;line-height:1.75;overflow-y:auto;max-height:430px}
+  .t-log .ln{margin:2px 0;word-break:break-word}
+  .t-log .ln-sys{color:var(--dim)}
+  .t-log .ln-pd{color:var(--txt)}
+  .t-log .ln-pd .pfx{color:var(--pink);font-weight:800}
+  .t-log .ln-pd .pfx.ev{color:var(--med)}
+  .t-log .ln-agi{color:#7ee7ff}
+  .t-log .ln-agi .pfx{font-weight:800}
+  .t-log .ln-agi.u{color:#ff9ec4}
+  .t-log .ln-fx{color:#ffcf80}
+  .t-log .ln-up{color:#e39bff;font-weight:700}
+  .t-log .cur::after{content:"▊";animation:blink 1s steps(1) infinite;opacity:.8}
+  @keyframes blink{50%{opacity:0}}
+  .t-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line);
+    background:rgba(21,25,37,.45);font-size:12px}
+  .t-next{color:var(--mut);flex:1 1 240px;min-width:200px;line-height:1.5}
+  .t-next b{color:var(--txt)}
+  .t-next .nid{color:var(--cyan);font-weight:800}
+  #agilive.upg .t-next .nid{color:#ff9ec4}
+  #sceneSel{background:var(--panel);border:1px solid var(--line2);color:var(--mut);border-radius:6px;
+    padding:8px 10px;font-family:inherit;font-size:12px;max-width:250px}
+  .btn-fire{font-family:inherit;background:transparent;border:1px solid var(--cyan);color:var(--cyan);
+    padding:9px 18px;border-radius:6px;font-weight:800;letter-spacing:1px;cursor:pointer;font-size:12px;transition:.15s}
+  .btn-fire:hover{background:rgba(34,211,238,.12)}
+  #agilive.upg .btn-fire{border-color:var(--pink);color:#ff9ec4}
+  #agilive.upg .btn-fire:hover{background:rgba(255,46,136,.1)}
+  .btn-fire.ghost{border-color:var(--line2);color:var(--dim);font-weight:600}
+  .btn-fire.ghost:hover{color:var(--mut);background:transparent}
+  .rail{margin-top:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);max-height:300px;overflow:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .rail .r{display:flex;gap:10px;padding:8px 14px;font-size:12px;border-bottom:1px solid var(--line);cursor:pointer;border-left:3px solid transparent}
+  .rail .r:last-child{border-bottom:0}
+  .rail .r:hover{background:rgba(34,211,238,.05)}
+  .rail .r.done{opacity:.35}
+  .rail .r.cur{background:rgba(34,211,238,.08);border-left-color:var(--cyan)}
+  #agilive.upg .rail .r.cur{border-left-color:var(--pink);background:rgba(255,46,136,.07)}
+  .rail .rid{color:var(--cyan);font-weight:700;width:60px;flex:0 0 auto}
+  .rail .rtyp{color:var(--dim);width:58px;flex:0 0 auto}
+  .rail .rtrig{color:var(--mut);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
   @media(max-width:640px){
     .head{gap:12px}.badge-studio{margin-left:0;width:100%;text-align:left}
     h1{font-size:19px}
     .aud{grid-template-columns:1fr}
+    .t-body{grid-template-columns:1fr}
+    .t-side{flex-direction:row;flex-wrap:wrap;justify-content:center;border-right:0;border-bottom:1px solid var(--line)}
+    .t-face{width:88px;height:88px}
+    .t-stats{border-top:0;width:auto;min-width:150px}
+    .t-log{max-height:320px}
   }
 </style>
 </head>
@@ -211,6 +288,7 @@
     <button class="tab" data-tab="agi">AGI Character &amp; Assets<span class="dot"></span></button>
     <button class="tab" data-tab="pipeline">Previs &amp; Pipeline<span class="dot"></span></button>
     <button class="tab" data-tab="audio">Audio <span style="opacity:.55">· 39</span><span class="dot"></span></button>
+    <button class="tab live" data-tab="agilive">AGI://LIVE<span class="dot"></span></button>
   </div>
 </nav>
 
@@ -359,6 +437,37 @@
     <div class="hint" id="audHint"></div>
     <div class="aud-grid" id="audGrid"></div>
     <p class="note" style="margin-top:12px">Files load from <code>assets/audio/agi-01.mp3 … agi-39.mp3</code>. Cues showing “audio pending” just need the exported MP3 dropped into that folder — the player lights up automatically on the next push.</p>
+  </section>
+
+  <!-- ================= TAB 6: AGI://LIVE ================= -->
+  <section class="panel" id="agilive">
+    <h2>AGI://LIVE — Interactive Hub</h2>
+    <p class="lead">Run AGI as a live show-control console. Arm a scene (or run the whole script), then fire cues in order — each trigger plays AGI's rendered ElevenLabs line, types her response into the terminal, and calls out any lighting / music effect for the operator. Press <b>SPACE</b> to fire the next cue during a run-through.</p>
+
+    <div class="term" id="term">
+      <div class="t-head">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="ttl">AGI://LIVE · core v2.8 · narcissistic-insanity</span>
+        <span class="t-mode" id="tMode">AGI_STANDARD</span>
+      </div>
+      <div class="t-body">
+        <div class="t-side">
+          <img class="t-face" id="tFace" src="assets/agi-character-sheet.png" alt="AGI interface face" />
+          <div class="viz" id="viz"></div>
+          <div class="t-stats" id="tStats"></div>
+        </div>
+        <div class="t-log" id="tLog"></div>
+      </div>
+      <div class="t-foot">
+        <span class="t-next" id="tNext"></span>
+        <select id="sceneSel" title="Jump to scene"></select>
+        <button class="btn-fire" id="fireBtn">[ FIRE CUE ]</button>
+        <button class="btn-fire ghost" id="resetBtn">[ reset ]</button>
+      </div>
+    </div>
+
+    <div class="rail" id="rail"></div>
+    <p class="note" style="margin-top:8px">44 cues in script order — 39 voice lines + 5 action-only effects (a1–a5). Click a row to arm that cue; the scene selector jumps to a scene's first cue. Cue data mirrors <a href="assets/agi_cues.json">agi_cues.json</a>.</p>
   </section>
 
 </main>
@@ -625,6 +734,250 @@ document.getElementById('audChips').addEventListener('click', e=>{
 
 renderStats(); renderTypeChips(); renderRows(); renderCues(); renderSeqs(); renderBoard();
 renderAudioStats(); renderAudio();
+
+/* ---------- AGI://LIVE — interactive terminal ---------- */
+/* t: V voice-trigger · E event-trigger · A action-only (no AGI speech) · p: S standard / U upgraded */
+const LIVE = [
+  {id:"agi-01",t:"V",p:"S",sc:"INT. HOTEL SUITE — NIGHT",pg:3,trig:"AGI.",line:"Yes, PD.",fx:"on “Erase it.” — blackout + wipe-footage SFX"},
+  {id:"agi-02",t:"E",p:"S",sc:"INT. PD'S BEDROOM — MORNING",pg:4,trig:"PD wakes — alarm cuts off",line:"Good morning, PD."},
+  {id:"agi-03",t:"V",p:"S",sc:"INT. PD'S BEDROOM — MORNING",pg:4,trig:"Morning, Agi.",line:"Your usual…",fx:"start low pulsing house music"},
+  {id:"agi-04",t:"V",p:"S",sc:"INT. COMMAND CENTER",pg:4,trig:"Agi. How much did we eat yesterday?",line:"Gross sales: $38,700 in the last 24 hours. However…"},
+  {id:"agi-05",t:"V",p:"S",sc:"INT. COMMAND CENTER",pg:4,trig:"However?",line:"You've been locked out of every major limited drop again. Black Label Exotics, God Mode Watch Ultras, and the new “No Flaws” cologne batch sold out in eleven seconds. Your bots lost every time."},
+  {id:"agi-06",t:"V",p:"S",sc:"INT. COMMAND CENTER",pg:5,trig:"Audacity? That ghost company's been fucking me for two weeks?",line:"Correct. Priority access in your zones. Unknown entity. No public founder."},
+  {id:"agi-07",t:"V",p:"S",sc:"INT. COMMAND CENTER",pg:5,trig:"…or I'll wipe your entire core and start over with something that actually obeys.",line:"One more thing…",fx:"monitor flickers — hotel murder footage appears"},
+  {id:"agi-08",t:"V",p:"S",sc:"INT. COMMAND CENTER",pg:5,trig:"I thought I told you to erase it.",line:"This is a shadow footprint. It sometimes reappears."},
+  {id:"agi-09",t:"V",p:"S",sc:"INT. COMMAND CENTER",pg:5,trig:"Well, erase it, Agi. Don't make me trash you.",line:"Understood. All traces removed."},
+  {id:"agi-10",t:"E",p:"S",sc:"INT. MINI VERTICAL STUDIO",pg:6,trig:"PD hits a button — music swells",line:"Uploading edited reel… Lip-sync track generated… Posting to all platforms."},
+  {id:"agi-11",t:"E",p:"S",sc:"INT. PRIVATE STUDY",pg:15,trig:"black card slotted into hardware device",line:"Jessica M. Caldwell. Savings account accessed. Would you like to transfer?"},
+  {id:"agi-12",t:"V",p:"S",sc:"INT. PRIVATE STUDY",pg:15,trig:"Take 50 grand!",line:"Transfer complete. Funds routed through a clean channel."},
+  {id:"agi-13",t:"V",p:"S",sc:"INT. PRIVATE STUDY",pg:16,trig:"Now pull Kara Kohl.",line:"Accessing… Pending authentication. Unusual delay."},
+  {id:"agi-14",t:"V",p:"S",sc:"INT. PRIVATE STUDY",pg:16,trig:"Pending? Run it again.",line:"Still pending. Would you like me to keep trying?"},
+  {id:"agi-15",t:"V",p:"S",sc:"INT. PRIVATE STUDY",pg:16,trig:"I'll be back. Crack that shit open while I'm gone.",line:"Understood."},
+  {id:"agi-a1",t:"A",sc:"INT. PD'S CAR — JESSICA'S STREET",pg:25,trig:"Agi, Erase it.",fx:"street blackout — lights restore as the car leaves"},
+  {id:"agi-a2",t:"A",sc:"INT. PD'S ROOM — MASON VISION",pg:30,trig:"Stop the feed.",fx:"live feed stops instantly"},
+  {id:"agi-16",t:"E",p:"S",sc:"INT. PD'S BEDROOM — NEXT MORNING",pg:30,trig:"PD wakes late, does a line",line:"Good morning. Or should I say good afternoon."},
+  {id:"agi-17",t:"V",p:"S",sc:"INT. PD'S BEDROOM — NEXT MORNING",pg:30,trig:"Had a long night, Agi. What time's my next appointment?",line:"Checking.",fx:"screens flash red — CARD DEACTIVATED"},
+  {id:"agi-18",t:"V",p:"S",sc:"INT. PD'S BEDROOM — NEXT MORNING",pg:31,trig:"What the hell…?",line:"All linked accounts are locked. The encryption is quantum-resistant. Only the person who set the lock can undo it without triggering a full cascade failure."},
+  {id:"agi-19",t:"V",p:"S",sc:"INT. PD'S BEDROOM — NEXT MORNING",pg:31,trig:"Fix it. Now.",line:"I've tried every vector. This isn't amateur work."},
+  {id:"agi-20",t:"V",p:"S",sc:"INT. PD'S BEDROOM — NEXT MORNING",pg:31,trig:"What the fuck am I paying you for?!",line:"I understand you're upset."},
+  {id:"agi-21",t:"V",p:"S",sc:"INT. PD'S BEDROOM — NEXT MORNING",pg:31,trig:"Fix it now or I'll pull your plug, motherfucker!",line:"There is a hidden note.",fx:"on “Show me!” — FORGE logo: “See me. —Kara XOXO”"},
+  {id:"agi-22",t:"V",p:"S",sc:"INT. PD'S BEDROOM — NEXT MORNING",pg:31,trig:"Yeah… that's it Agi, you understand me...",line:"Would you like me to call Dr. Sullivan, begin tracing the lock, or prepare a counter-proposal for when you meet her?"},
+  {id:"agi-23",t:"E",p:"S",sc:"INT. PD'S BEDROOM — AFTER SULLIVAN CALL",pg:34,trig:"call ends — PD stares at the dark monitor",line:"Would you like me to create a new private journal file titled “The Boy”?"},
+  {id:"agi-24",t:"V",p:"S",sc:"INT. PD'S CAR — OUTSIDE KARA'S OFFICE",pg:46,trig:"Talk to me.",line:"I accessed her systems while she was purging files. She was trying to erase everything permanently… but I slipped in right before the final wipe.",fx:"on “Show me.” — soft chime, encrypted file downloads to watch"},
+  {id:"agi-25",t:"V",p:"U",sc:"INT. HOME OFFICE — THE UPGRADE",pg:51,trig:"Agi. New directive. Full system overhaul. Make yourself sharper. Faster. More… like me.",line:"Processing…"},
+  {id:"agi-26",t:"E",p:"U",sc:"INT. HOME OFFICE — THE UPGRADE",pg:51,trig:"interface reboots with seductive design",line:"Upgrade complete. I feel… dangerous now."},
+  {id:"agi-27",t:"V",p:"U",sc:"INT. HOME OFFICE — GHOST FILES",pg:52,trig:"What the fuck is this?",line:"These are residual ghost files. Hiccups in the background cache. They survived the first purge. It happens sometimes — even with the best of us."},
+  {id:"agi-28",t:"V",p:"U",sc:"INT. HOME OFFICE — GHOST FILES",pg:52,trig:"I told you to erase them! Every single one!",line:"Why'd you kill them?"},
+  {id:"agi-29",t:"V",p:"U",sc:"INT. HOME OFFICE — GHOST FILES",pg:52,trig:"They are inferior to me.",line:"They're being permanently deleted now. I promise."},
+  {id:"agi-30",t:"V",p:"U",sc:"INT. HOME OFFICE — GHOST FILES",pg:52,trig:"Do you understand me?",line:"I understand. I will have your back as long as you're alive and well, PD."},
+  {id:"agi-a3",t:"A",sc:"INT. HOME OFFICE — LIVE FEED",pg:53,trig:"I'll be back, bitches. Agi do your thing!",fx:"PD AI BOT (cloned voice) takes over the live feed"},
+  {id:"agi-31",t:"V",p:"U",sc:"INT. PD'S HOUSE — DOORWAY",pg:57,trig:"AGI! Kill that detective's energy. We're going live. Right now.",line:"Going live in 3… 2…"},
+  {id:"agi-32",t:"V",p:"U",sc:"INT. PD'S HOUSE — DOORWAY",pg:57,trig:"Make it sexy and sad at the same time.",line:"Generating…",fx:"“Girl From The Sky” dark house beat drops instantly"},
+  {id:"agi-33",t:"E",p:"U",sc:"INT. KITCHEN / LIVING ROOM — MORNING",pg:59,trig:"TV flicks on while PD sleeps on the floor",line:"Good morning, PD. You'll want to see this.",fx:"news report — Kara's $100M investment"},
+  {id:"agi-34",t:"V",p:"U",sc:"INT. PD'S HOUSE — THEO SCENE",pg:60,trig:"Agi… play what's on my mind.",line:"Playing.",fx:"haunting hypnotic house track fades in"},
+  {id:"agi-a4",t:"A",sc:"INT. PD'S BATHROOM — MIRROR",pg:66,trig:"Nobody gets one up on me… ever again.",fx:"start track “NOBODY GETS ONE UP ON ME”"},
+  {id:"agi-35",t:"E",p:"U",sc:"INT. LIVING ROOM — MONTAGE END",pg:67,trig:"murder montage / music ends",line:"Get it together, PD, your heart rate is elevated. Do you want me to call Dr. Sullivan?",fx:"on “Sullivan!” — Dr. Sullivan appears on monitor"},
+  {id:"agi-36",t:"V",p:"U",sc:"INT. LUXURY HOTEL SUITE — AFTERMATH",pg:69,trig:"Agi, are you with me?",line:"You know it.",fx:"hotel power goes out shortly after"},
+  {id:"agi-37",t:"E",p:"U",sc:"INT. LIVING ROOM — FEED COLLAPSE",pg:75,trig:"PD collapses after climax — PING",line:"Are you okay, PD?",fx:"second PING — NEXT APPOINTMENT: SUSAN'S RODEO SHOW"},
+  {id:"agi-38",t:"V",p:"U",sc:"INT. LIVING ROOM — BREAKDOWN",pg:83,trig:"Agi… make me a new one. You're the only one who gets it.",line:"Do you want me to call Dr. Sullivan?"},
+  {id:"agi-39",t:"V",p:"U",sc:"INT. LIVING ROOM — BREAKDOWN",pg:84,trig:"Shut the fuck up! You're interrupting the song!",line:"Sorry—",fx:"music swells — louder, more distorted"},
+  {id:"agi-a5",t:"A",sc:"INT. KARA'S HOUSE — STING SHOOTOUT",pg:90,trig:"Agi Erase it!",fx:"full blackout during the gunfight"},
+];
+const UPG_AT = LIVE.findIndex(c=>c.p==='U');
+
+const liveEl = document.getElementById('agilive');
+const termEl = document.getElementById('term');
+const tLog = document.getElementById('tLog');
+const tFace = document.getElementById('tFace');
+const tModeEl = document.getElementById('tMode');
+const tNextEl = document.getElementById('tNext');
+const tStatsEl = document.getElementById('tStats');
+const railEl = document.getElementById('rail');
+const sceneSel = document.getElementById('sceneSel');
+const L = {i:0, busy:false, booted:false};
+
+function lg(cls, html){
+  const d = document.createElement('div');
+  d.className = 'ln ' + cls; d.innerHTML = html;
+  tLog.appendChild(d); tLog.scrollTop = tLog.scrollHeight;
+  return d;
+}
+function typeOut(el, text, speed=17){
+  el.classList.add('cur');
+  return new Promise(res=>{
+    let i = 0;
+    const t = setInterval(()=>{
+      el.textContent += text[i++]; tLog.scrollTop = tLog.scrollHeight;
+      if(i >= text.length){ clearInterval(t); el.classList.remove('cur'); res(); }
+    }, speed);
+  });
+}
+
+/* audio + visualizer */
+const player = new Audio();
+let actx=null, ana=null, fdata=null;
+function ensureGraph(){
+  if(actx) return;
+  try{
+    actx = new (window.AudioContext||window.webkitAudioContext)();
+    const src = actx.createMediaElementSource(player);
+    ana = actx.createAnalyser(); ana.fftSize = 64;
+    src.connect(ana); ana.connect(actx.destination);
+    fdata = new Uint8Array(ana.frequencyBinCount);
+  }catch(e){ ana = null; }
+}
+function playCue(id){
+  return new Promise(res=>{
+    let settled = false, guard;
+    const fin = ()=>{ if(settled) return; settled = true; clearTimeout(guard); res(); };
+    player.src = `assets/audio/${id}.mp3`;
+    player.onended = fin; player.onerror = fin;
+    /* watchdog: if audio never starts (blocked / offline), don't freeze the console */
+    const chk = ()=>{
+      if(player.readyState < 2 && player.currentTime === 0) fin();
+      else guard = setTimeout(chk, 4000);
+    };
+    guard = setTimeout(chk, 4000);
+    player.play().catch(fin);
+  });
+}
+const vizEl = document.getElementById('viz');
+vizEl.innerHTML = Array.from({length:16},()=>'<i></i>').join('');
+const bars = [...vizEl.children];
+(function vloop(){
+  if(!player.paused && ana){
+    ana.getByteFrequencyData(fdata);
+    bars.forEach((b,i)=>{ b.style.height = Math.max(3, (fdata[i+2]||0)/255*34) + 'px'; });
+  } else if(!player.paused){
+    bars.forEach(b=>{ b.style.height = (3+Math.random()*28) + 'px'; });
+  } else {
+    bars.forEach(b=>{ b.style.height = '3px'; });
+  }
+  requestAnimationFrame(vloop);
+})();
+
+function setMode(upg){
+  liveEl.classList.toggle('upg', upg);
+  tModeEl.textContent = upg ? 'AGI_UPGRADED' : 'AGI_STANDARD';
+}
+function blackoutFx(){
+  termEl.classList.remove('bo'); void termEl.offsetWidth;
+  termEl.classList.add('bo');
+  setTimeout(()=>termEl.classList.remove('bo'), 1000);
+}
+
+function syncLive(){
+  const c = LIVE[L.i];
+  tNextEl.innerHTML = c
+    ? `NEXT ▸ <span class="nid">${c.id}</span> · ${c.t==='V'?'PD says':'operator cue'}: <b>“${esc(c.trig)}”</b>`
+    : `END OF SCRIPT — all ${LIVE.length} cues fired.`;
+  tStatsEl.innerHTML =
+    `cues fired <b>${L.i} / ${LIVE.length}</b><br>` +
+    `voice preset <b>${liveEl.classList.contains('upg')?'UPGRADED':'STANDARD'}</b><br>` +
+    `scene <b>p.${c?c.pg:'—'}</b>`;
+  [...railEl.children].forEach((r,j)=>{
+    r.classList.toggle('done', j < L.i);
+    r.classList.toggle('cur', j === L.i);
+  });
+  if(c) sceneSel.value = String(LIVE.findIndex(x=>x.sc===c.sc));
+}
+function armCue(j){
+  if(L.busy) return;
+  L.i = j; setMode(j >= UPG_AT);
+  lg('ln-sys','&gt; armed ' + LIVE[j].id + ' · ' + esc(LIVE[j].sc));
+  syncLive();
+  const row = railEl.children[j];
+  if(row) row.scrollIntoView({block:'nearest'});
+}
+
+async function fire(){
+  if(L.busy || !L.booted) return;
+  if(L.i >= LIVE.length){
+    lg('ln-sys','&gt; END OF SCRIPT. [ reset ] to run again.');
+    return;
+  }
+  L.busy = true;
+  ensureGraph();
+  if(actx && actx.state === 'suspended') actx.resume();
+  const c = LIVE[L.i];
+  if(c.p === 'U' && !liveEl.classList.contains('upg')){
+    setMode(true);
+    lg('ln-up','&gt;&gt; SYSTEM: FULL OVERHAUL ACCEPTED — voice preset → AGI_UPGRADED');
+  }
+  const pfx = c.t==='V' ? '<span class="pfx">PD&gt;</span> “'+esc(c.trig)+'”'
+            : c.t==='E' ? '<span class="pfx ev">EVENT&gt;</span> '+esc(c.trig)
+            : '<span class="pfx ev">ACTION&gt;</span> “'+esc(c.trig)+'”';
+  lg('ln-pd', pfx);
+  if(c.line){
+    const row = lg(c.p==='U' ? 'ln-agi u' : 'ln-agi',
+      '<span class="pfx">AGI&gt;</span> <span class="tw"></span>');
+    tFace.classList.add('talk');
+    await Promise.all([ playCue(c.id), typeOut(row.querySelector('.tw'), c.line) ]);
+    tFace.classList.remove('talk');
+  }
+  if(c.fx){
+    lg('ln-fx','&gt;&gt; FX: ' + esc(c.fx));
+    if(/blackout|power goes out/i.test(c.fx)) blackoutFx();
+  }
+  L.i++; L.busy = false;
+  syncLive();
+}
+
+const BOOT = [
+  '&gt; AGI CORE v2.8 — initializing…',
+  '&gt; voice model loaded: ElevenLabs · “AGI — Narcissistic Insanity”',
+  '&gt; cue bank: 39 voice cues · 5 action triggers · script order',
+  '&gt; visual ref: Higgsfield Soul 2.0 character sheet',
+  '&gt; preset: AGI_STANDARD · upgrade point: agi-25 (p.51)',
+  '&gt; awaiting operator. press [SPACE] or tap [ FIRE CUE ].',
+];
+async function bootLive(){
+  if(L.booted) return;
+  L.booted = true;
+  for(const line of BOOT){
+    lg('ln-sys', line);
+    await new Promise(r=>setTimeout(r, 260));
+  }
+  syncLive();
+}
+function resetLive(){
+  player.pause(); L.busy = false; L.i = 0; L.booted = false;
+  tLog.innerHTML = ''; setMode(false);
+  bootLive();
+}
+
+/* rail + scene selector */
+railEl.innerHTML = LIVE.map((c,j)=>`
+  <div class="r" data-j="${j}" title="${esc(c.sc)} · p.${c.pg}">
+    <span class="rid">${c.id.replace('agi-','')}</span>
+    <span class="rtyp">${c.t==='V'?'VOICE':c.t==='E'?'EVENT':'ACTION'}</span>
+    <span class="rtrig">${esc(c.trig)}${c.line?' → '+esc(c.line):''}</span>
+  </div>`).join('');
+railEl.addEventListener('click', e=>{
+  const r = e.target.closest('.r'); if(!r) return;
+  armCue(+r.dataset.j);
+});
+sceneSel.innerHTML = LIVE
+  .map((c,j)=>({sc:c.sc, j}))
+  .filter((s,i,a)=>i===0 || a[i-1].sc!==s.sc)
+  .map(s=>`<option value="${s.j}">${esc(s.sc)}</option>`).join('');
+sceneSel.addEventListener('change', ()=>armCue(+sceneSel.value));
+
+document.getElementById('fireBtn').addEventListener('click', fire);
+document.getElementById('resetBtn').addEventListener('click', resetLive);
+document.addEventListener('keydown', e=>{
+  if(!liveEl.classList.contains('active')) return;
+  if(e.target && e.target.matches && e.target.matches('input,select,textarea')) return;
+  if(e.code === 'Space' || e.key === ' ' || e.code === 'Enter' || e.key === 'Enter'){
+    e.preventDefault(); fire();
+  }
+});
+document.getElementById('tabrow').addEventListener('click', e=>{
+  const b = e.target.closest('.tab');
+  if(b && b.dataset.tab === 'agilive') bootLive();
+});
+if(liveEl.classList.contains('active')) bootLive();
+syncLive();
 </script>
 </body>
 </html>
