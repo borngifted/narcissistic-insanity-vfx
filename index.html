@@ -335,10 +335,18 @@
     <p class="lead">AGI is PD's ever-present AI companion — a smiling face living across his Apple Watch, phone, and monitors, voice-over only. She is the single most recurring visual-effects and audio asset in the film, and her tone shifts after PD's mid-film "upgrade."</p>
 
     <figure class="sheet">
-      <img src="assets/agi-character-sheet.png" alt="AGI character reference sheet — front, three-quarter and profile views with expression studies" loading="lazy" />
+      <img src="assets/agi-character-sheet.png" alt="AGI character reference sheet — African American woman with sleek center-part glass bob, front and profile views with expression studies, magenta/cyan neon HUD styling" loading="lazy" />
       <figcaption>
-        <b>AGI — Character Reference Sheet</b> · generated with Higgsfield Soul 2.0
-        <span class="sp"><a href="assets/agi-character-sheet.png" target="_blank">Full-res ↗</a> &nbsp;·&nbsp; <a href="assets/agi-character-sheet-alt.png" target="_blank">Alt variation ↗</a></span>
+        <b>AGI — Character Reference Sheet (Standard state)</b> · generated with Higgsfield Soul 2.0
+        <span class="sp"><a href="assets/agi-character-sheet.png" target="_blank">Full-res ↗</a> &nbsp;·&nbsp; <a href="assets/agi-character-sheet-v1.png" target="_blank">Previous design (v1) ↗</a></span>
+      </figcaption>
+    </figure>
+
+    <figure class="sheet">
+      <img src="assets/agi-character-sheet-upgraded.png" alt="AGI upgraded-state reference sheet — same character with smoky teal eye makeup, sultrier styling, saturated magenta and cyan neon" loading="lazy" />
+      <figcaption>
+        <b>AGI — Upgraded state (post p.51)</b> · sultrier, subtly dangerous · Higgsfield Soul 2.0
+        <span class="sp"><a href="assets/agi-character-sheet-upgraded.png" target="_blank">Full-res ↗</a></span>
       </figcaption>
     </figure>
 
@@ -353,12 +361,12 @@
       </div>
       <div class="card">
         <h3>🎭 Character Image <span class="tag">DELIVERED</span></h3>
-        <p>Character design generated with <b>Higgsfield Soul 2.0</b> (see sheet above). On-screen she reads as a face/interface across devices — no body.</p>
+        <p>Character design generated with <b>Higgsfield Soul 2.0</b> (see sheets above). AGI is an African American woman; on-screen she reads as a face/interface across devices — no body.</p>
         <ul>
-          <li>Front, three-quarter &amp; profile turnaround + expression studies</li>
+          <li>Front &amp; profile turnaround + expression studies, both states</li>
           <li>Two visual states: <b>calm</b> → <b>upgraded/seductive</b> (post p.51)</li>
-          <li>Holographic skin, magenta/cyan neon, reflective bob — pulse/waveform reactive</li>
-          <li>Glitch/corrupted variant for the "dying AGI" beats</li>
+          <li>Deep-brown radiant skin, sleek center-part glass bob, amber eyes, magenta/cyan neon HUD framing</li>
+          <li>Upgraded state: smoky teal eye makeup, hot-pink palette — glitch/corrupted variant still to come for the "dying AGI" beats</li>
         </ul>
       </div>
     </div>
@@ -452,7 +460,7 @@
       </div>
       <div class="t-body">
         <div class="t-side">
-          <img class="t-face" id="tFace" src="assets/agi-character-sheet.png" alt="AGI interface face" />
+          <img class="t-face" id="tFace" src="assets/agi-avatar.png" alt="AGI interface face" />
           <div class="viz" id="viz"></div>
           <div class="t-stats" id="tStats"></div>
         </div>
@@ -859,7 +867,9 @@ const bars = [...vizEl.children];
 function setMode(upg){
   liveEl.classList.toggle('upg', upg);
   tModeEl.textContent = upg ? 'AGI_UPGRADED' : 'AGI_STANDARD';
+  tFace.src = upg ? 'assets/agi-avatar-upgraded.png' : 'assets/agi-avatar.png';
 }
+new Image().src = 'assets/agi-avatar-upgraded.png'; /* preload so the upgrade swap is instant */
 function blackoutFx(){
   termEl.classList.remove('bo'); void termEl.offsetWidth;
   termEl.classList.add('bo');
@@ -883,7 +893,7 @@ function syncLive(){
 }
 function armCue(j){
   if(L.busy) return;
-  L.i = j; setMode(j >= UPG_AT);
+  L.i = j; setMode(j > UPG_AT); /* arming agi-25 itself stays standard — the fire() announces the switch */
   lg('ln-sys','&gt; armed ' + LIVE[j].id + ' · ' + esc(LIVE[j].sc));
   syncLive();
   const row = railEl.children[j];
