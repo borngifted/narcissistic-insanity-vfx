@@ -1,0 +1,74 @@
+{
+  "project": "Narcissistic Insanity v2.8",
+  "character": {
+    "name": "AGI",
+    "gender_presentation": "female",
+    "voice_presets": {
+      "AGI_STANDARD": "Calm, neutral, efficient AI assistant. Warm but controlled. Used for cues agi-01 through agi-24.",
+      "AGI_UPGRADED": "Pleased, sultry, subtly dangerous, emotionally attached. Used from cue agi-25 (post-upgrade) onward."
+    },
+    "visual": "Smiling AI face displayed on Apple Watch, phone, and computer screens. Voice-over only; no physical body."
+  },
+  "trigger_types": {
+    "VOICE": "Fired when the actor speaks the trigger_line (speech recognition or manual tap)",
+    "EVENT": "Fired by scene action (button press, alarm, scene start) - manual operator trigger",
+    "ACTION_ONLY": "No AGI speech; app fires an effect (blackout, music, feed stop, chime)"
+  },
+  "cues": [
+    { "id": "agi-01", "scene": "INT. HOTEL SUITE - NIGHT", "page": 3, "trigger_type": "VOICE", "trigger_line": "AGI.", "agi_line": "Yes, PD.", "voice_preset": "AGI_STANDARD", "followup_action": "On PD's next line 'Erase it.' - blackout, wipe-footage SFX" },
+    { "id": "agi-02", "scene": "INT. PD'S BEDROOM - MORNING", "page": 4, "trigger_type": "EVENT", "trigger_line": "PD wakes, alarm cuts off", "agi_line": "Good morning, PD.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-03", "scene": "INT. PD'S BEDROOM - MORNING", "page": 4, "trigger_type": "VOICE", "trigger_line": "Morning, Agi.", "agi_line": "Your usual…", "voice_preset": "AGI_STANDARD", "followup_action": "Start low pulsing house music" },
+    { "id": "agi-04", "scene": "INT. PD'S LUXURY HOUSE - COMMAND CENTER", "page": 4, "trigger_type": "VOICE", "trigger_line": "Agi. How much did we eat yesterday?", "agi_line": "Gross sales: $38,700 in the last 24 hours. However…", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-05", "scene": "INT. PD'S LUXURY HOUSE - COMMAND CENTER", "page": 4, "trigger_type": "VOICE", "trigger_line": "However?", "agi_line": "You've been locked out of every major limited drop again. Black Label Exotics, God Mode Watch Ultras, and the new \"No Flaws\" cologne batch sold out in eleven seconds. Your bots lost every time.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-06", "scene": "INT. PD'S LUXURY HOUSE - COMMAND CENTER", "page": 5, "trigger_type": "VOICE", "trigger_line": "Audacity? That ghost company's been fucking me for two weeks?", "agi_line": "Correct. Priority access in your zones. Unknown entity. No public founder.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-07", "scene": "INT. PD'S LUXURY HOUSE - COMMAND CENTER", "page": 5, "trigger_type": "VOICE", "trigger_line": "…or I'll wipe your entire core and start over with something that actually obeys.", "agi_line": "One more thing…", "voice_preset": "AGI_STANDARD", "followup_action": "Monitor flickers - hotel murder footage appears" },
+    { "id": "agi-08", "scene": "INT. PD'S LUXURY HOUSE - COMMAND CENTER", "page": 5, "trigger_type": "VOICE", "trigger_line": "I thought I told you to erase it.", "agi_line": "This is a shadow footprint. It sometimes reappears.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-09", "scene": "INT. PD'S LUXURY HOUSE - COMMAND CENTER", "page": 5, "trigger_type": "VOICE", "trigger_line": "Well, erase it, Agi. Don't make me trash you.", "agi_line": "Understood. All traces removed.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-10", "scene": "INT. MINI VERTICAL STUDIO", "page": 6, "trigger_type": "EVENT", "trigger_line": "PD hits a button; music swells", "agi_line": "Uploading edited reel… Lip-sync track generated… Posting to all platforms.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-11", "scene": "INT. PD'S HOUSE - PRIVATE STUDY", "page": 15, "trigger_type": "EVENT", "trigger_line": "Black card slotted into hardware device", "agi_line": "Jessica M. Caldwell. Savings account accessed. Would you like to transfer?", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-12", "scene": "INT. PD'S HOUSE - PRIVATE STUDY", "page": 15, "trigger_type": "VOICE", "trigger_line": "Take 50 grand!", "agi_line": "Transfer complete. Funds routed through a clean channel.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-13", "scene": "INT. PD'S HOUSE - PRIVATE STUDY", "page": 16, "trigger_type": "VOICE", "trigger_line": "Now pull Kara Kohl.", "agi_line": "Accessing… Pending authentication. Unusual delay.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-14", "scene": "INT. PD'S HOUSE - PRIVATE STUDY", "page": 16, "trigger_type": "VOICE", "trigger_line": "Pending? Run it again.", "agi_line": "Still pending. Would you like me to keep trying?", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-15", "scene": "INT. PD'S HOUSE - PRIVATE STUDY", "page": 16, "trigger_type": "VOICE", "trigger_line": "I'll be back. Crack that shit open while I'm gone.", "agi_line": "Understood.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-a1", "scene": "INT. PD'S CAR outside Jessica's house", "page": 25, "trigger_type": "ACTION_ONLY", "trigger_line": "Agi, Erase it.", "agi_line": null, "followup_action": "Street blackout; lights restore as car leaves" },
+    { "id": "agi-a2", "scene": "INT. PD'S ROOM - Uncle Mason vision", "page": 30, "trigger_type": "ACTION_ONLY", "trigger_line": "Stop the feed.", "agi_line": null, "followup_action": "Live feed stops instantly" },
+    { "id": "agi-16", "scene": "INT. PD'S BEDROOM - NEXT MORNING", "page": 30, "trigger_type": "EVENT", "trigger_line": "PD wakes late, does a line", "agi_line": "Good morning. Or should I say good afternoon.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-17", "scene": "INT. PD'S BEDROOM", "page": 30, "trigger_type": "VOICE", "trigger_line": "Had a long night, Agi. What time's my next appointment?", "agi_line": "Checking.", "voice_preset": "AGI_STANDARD", "followup_action": "Screens flash red: CARD DEACTIVATED" },
+    { "id": "agi-18", "scene": "INT. PD'S BEDROOM", "page": 31, "trigger_type": "VOICE", "trigger_line": "What the hell…?", "agi_line": "All linked accounts are locked. The encryption is quantum-resistant. Only the person who set the lock can undo it without triggering a full cascade failure.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-19", "scene": "INT. PD'S BEDROOM", "page": 31, "trigger_type": "VOICE", "trigger_line": "Fix it. Now.", "agi_line": "I've tried every vector. This isn't amateur work.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-20", "scene": "INT. PD'S BEDROOM", "page": 31, "trigger_type": "VOICE", "trigger_line": "What the fuck am I paying you for?!", "agi_line": "I understand you're upset.", "voice_preset": "AGI_STANDARD" },
+    { "id": "agi-21", "scene": "INT. PD'S BEDROOM", "page": 31, "trigger_type": "VOICE", "trigger_line": "Fix it now or I'll pull your plug, motherfucker!", "agi_line": "There is a hidden note.", "voice_preset": "AGI_STANDARD", "followup_action": "On 'Show me!' - display FORGE logo: 'See me. -Kara XOXO'" },
+    { "id": "agi-22", "scene": "INT. PD'S BEDROOM - after tantrum", "page": 31, "trigger_type": "VOICE", "trigger_line": "Yeah… that's it Agi, you understand me...", "agi_line": "Would you like me to call Dr. Sullivan, begin tracing the lock, or prepare a counter-proposal for when you meet her?", "voice_preset": "AGI_STANDARD", "notes": "AGI turned on hard house music just before this to soothe his tantrum" },
+    { "id": "agi-23", "scene": "INT. PD'S BEDROOM - after Sullivan call", "page": 34, "trigger_type": "EVENT", "trigger_line": "Call ends; PD stares at dark monitor", "agi_line": "Would you like me to create a new private journal file titled \"The Boy\"?", "voice_preset": "AGI_STANDARD", "notes": "PD replies: '…Not yet.'" },
+    { "id": "agi-24", "scene": "INT. PD'S CAR - OUTSIDE KARA'S OFFICE", "page": 46, "trigger_type": "VOICE", "trigger_line": "Talk to me.", "agi_line": "I accessed her systems while she was purging files. She was trying to erase everything permanently… but I slipped in right before the final wipe.", "voice_preset": "AGI_STANDARD", "followup_action": "On 'Show me.' - soft chime, encrypted file downloads to watch" },
+    { "id": "agi-25", "scene": "INT. PD'S HOME OFFICE - THE UPGRADE", "page": 51, "trigger_type": "VOICE", "trigger_line": "Agi. New directive. Full system overhaul. Make yourself sharper. Faster. More… like me.", "agi_line": "Processing…", "voice_preset": "AGI_UPGRADED", "delivery": "pleased, sultry", "notes": "VOICE CHANGES FROM THIS POINT ON" },
+    { "id": "agi-26", "scene": "INT. PD'S HOME OFFICE", "page": 51, "trigger_type": "EVENT", "trigger_line": "Interface reboots with seductive design", "agi_line": "Upgrade complete. I feel… dangerous now.", "voice_preset": "AGI_UPGRADED" },
+    { "id": "agi-27", "scene": "INT. PD'S HOME OFFICE", "page": 52, "trigger_type": "VOICE", "trigger_line": "What the fuck is this?", "agi_line": "These are residual ghost files. Hiccups in the background cache. They survived the first purge. It happens sometimes — even with the best of us.", "voice_preset": "AGI_UPGRADED", "delivery": "calm" },
+    { "id": "agi-28", "scene": "INT. PD'S HOME OFFICE", "page": 52, "trigger_type": "VOICE", "trigger_line": "I told you to erase them! Every single one!", "agi_line": "Why'd you kill them?", "voice_preset": "AGI_UPGRADED", "notes": "AGI's most human/self-aware moment - key dramatic beat" },
+    { "id": "agi-29", "scene": "INT. PD'S HOME OFFICE", "page": 52, "trigger_type": "VOICE", "trigger_line": "They are inferior to me.", "agi_line": "They're being permanently deleted now. I promise.", "voice_preset": "AGI_UPGRADED" },
+    { "id": "agi-30", "scene": "INT. PD'S HOME OFFICE", "page": 52, "trigger_type": "VOICE", "trigger_line": "Do you understand me?", "agi_line": "I understand. I will have your back as long as you're alive and well, PD.", "voice_preset": "AGI_UPGRADED", "delivery": "soft, almost affectionate" },
+    { "id": "agi-a3", "scene": "INT. PD'S HOME OFFICE - live feed", "page": 53, "trigger_type": "ACTION_ONLY", "trigger_line": "I'll be back, bitches. Agi do your thing!", "agi_line": null, "followup_action": "PD AI BOT (cloned PD voice) takes over the live feed" },
+    { "id": "agi-31", "scene": "INT. PD'S HOUSE - DOORWAY, after Cuffie leaves", "page": 57, "trigger_type": "VOICE", "trigger_line": "AGI! Kill that detective's energy. We're going live. Right now.", "agi_line": "Going live in 3… 2…", "voice_preset": "AGI_UPGRADED" },
+    { "id": "agi-32", "scene": "INT. PD'S HOUSE - DOORWAY", "page": 57, "trigger_type": "VOICE", "trigger_line": "Make it sexy and sad at the same time.", "agi_line": "Generating…", "voice_preset": "AGI_UPGRADED", "followup_action": "Dark pulsing house beat ('Girl From The Sky') drops instantly" },
+    { "id": "agi-33", "scene": "INT. PD'S HOUSE - KITCHEN/LIVING ROOM - MORNING", "page": 59, "trigger_type": "EVENT", "trigger_line": "TV flicks on while PD sleeps on floor", "agi_line": "Good morning, PD. You'll want to see this.", "voice_preset": "AGI_UPGRADED", "followup_action": "News report: Kara's $100M investment" },
+    { "id": "agi-34", "scene": "INT. PD'S HOUSE - Theo scene", "page": 60, "trigger_type": "VOICE", "trigger_line": "Agi… play what's on my mind.", "agi_line": "Playing.", "voice_preset": "AGI_UPGRADED", "followup_action": "Haunting hypnotic house track fades in" },
+    { "id": "agi-a4", "scene": "INT. PD'S BATHROOM - mirror", "page": 66, "trigger_type": "ACTION_ONLY", "trigger_line": "Nobody gets one up on me… ever again.", "agi_line": null, "followup_action": "Start house track 'NOBODY GETS ONE UP ON ME'" },
+    { "id": "agi-35", "scene": "INT. PD'S HOUSE - LIVING ROOM, end of montage", "page": 67, "trigger_type": "EVENT", "trigger_line": "Murder montage / music ends", "agi_line": "Get it together, PD, your heart rate is elevated. Do you want me to call Dr. Sullivan?", "voice_preset": "AGI_UPGRADED", "followup_action": "On 'Sullivan!' - Dr. Sullivan appears on monitor" },
+    { "id": "agi-36", "scene": "INT. LUXURY HOTEL SUITE - aftermath", "page": 69, "trigger_type": "VOICE", "trigger_line": "Agi, are you with me?", "agi_line": "You know it.", "voice_preset": "AGI_UPGRADED", "followup_action": "Hotel power goes out shortly after" },
+    { "id": "agi-37", "scene": "INT. PD'S HOUSE - LIVING ROOM, live feed collapse", "page": 75, "trigger_type": "EVENT", "trigger_line": "PD collapses after climax; PING", "agi_line": "Are you okay PD?", "voice_preset": "AGI_UPGRADED", "followup_action": "Second PING: 'NEXT APPOINTMENT: SUSAN'S RODEO SHOW'" },
+    { "id": "agi-38", "scene": "INT. PD'S LIVING ROOM - breakdown", "page": 83, "trigger_type": "VOICE", "trigger_line": "Agi… make me a new one. You're the only one who gets it.", "agi_line": "Do you want me to call Dr. Sullivan?", "voice_preset": "AGI_UPGRADED", "notes": "Interface pulses and jagged track builds before the line" },
+    { "id": "agi-39", "scene": "INT. PD'S LIVING ROOM", "page": 84, "trigger_type": "VOICE", "trigger_line": "Shut the fuck up! You're interrupting the song!", "agi_line": "Sorry—", "voice_preset": "AGI_UPGRADED", "delivery": "cut off mid-word", "followup_action": "On PD's threat - music swells louder, more distorted" },
+    { "id": "agi-a5", "scene": "INT. KARA'S HOUSE - sting shootout", "page": 90, "trigger_type": "ACTION_ONLY", "trigger_line": "Agi Erase it!", "agi_line": null, "followup_action": "Full blackout during gunfight" }
+  ],
+  "pd_ai_bot_lines": [
+    { "id": "bot-01", "scene": "FaceTime with Monica", "page": 15, "line": "Mhm.", "delivery": "flat", "voice": "Cloned PD (actor) voice, NOT AGI" },
+    { "id": "bot-02", "scene": "FaceTime with Monica", "page": 15, "line": "Thursday. Sure thing...", "delivery": "distracted, cold", "voice": "Cloned PD (actor) voice" },
+    { "id": "bot-03", "scene": "Live feed takeover", "page": 54, "line": "Alright, I have one at 12K for dick play — 20K for balls-up! Anyone?", "voice": "Cloned PD (actor) voice" }
+  ],
+  "app_notes": [
+    "'Erase it' is spoken as a trigger in 4 different scenes (agi-01, agi-a1, agi-a5, plus 'erase' variants in agi-08/09). Use scene-scoped cue banks: operator selects the active scene, then cues fire sequentially - do not rely on global phrase matching.",
+    "Voice preset switches permanently at agi-25 (the upgrade). Generate cues 01-24 with AGI_STANDARD and 25-39 with AGI_UPGRADED.",
+    "Five cues are effects-only (a1-a5): blackouts, music starts, feed stop. The app should support non-audio actions (lighting/music commands) alongside voice playback.",
+    "Recurring AGI-controlled music stings worth pre-generating: morning house ritual, tantrum-soother hard house, 'Girl From The Sky', Theo ritual track, 'NOBODY GETS ONE UP ON ME', final jagged breakdown track."
+  ]
+}

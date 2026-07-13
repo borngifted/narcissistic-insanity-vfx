@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Narcissistic Insanity — VFX Production Hub</title>
+<meta name="description" content="VFX production hub for Narcissistic Insanity — shot tracker, scene breakdown, AGI character assets, and pipeline status. Levl Studio." />
+<style>
+  :root{
+    --bg:#0b0d12; --bg2:#0f121a; --panel:#151925; --panel2:#1b2130;
+    --line:#262d3d; --line2:#333b50;
+    --txt:#e8ebf2; --mut:#9aa3b7; --dim:#6b7488;
+    --mag:#c026ff; --pink:#ff2e88; --cyan:#22d3ee;
+    --hero:#c026ff; --high:#ff5470; --med:#ffb020; --low:#34d399;
+    --accent:#c026ff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(192,38,255,.14), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(255,46,136,.10), transparent 55%),
+      var(--bg);
+    color:var(--txt);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:var(--pink);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+
+  /* Header */
+  header{border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(21,25,37,.6),transparent)}
+  .head{display:flex;align-items:center;gap:18px;padding:22px 0 18px;flex-wrap:wrap}
+  .logo{
+    width:46px;height:46px;border-radius:11px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--mag),var(--pink));
+    display:grid;place-items:center;font-weight:800;font-size:20px;color:#fff;
+    box-shadow:0 6px 24px rgba(192,38,255,.4);
+  }
+  h1{font-size:22px;margin:0;letter-spacing:.5px;font-weight:800}
+  h1 .thin{color:var(--mut);font-weight:500}
+  .sub{color:var(--mut);font-size:13px;margin-top:2px}
+  .badge-studio{margin-left:auto;text-align:right;color:var(--mut);font-size:12px;line-height:1.4}
+  .badge-studio b{color:var(--txt)}
+
+  /* Tabs */
+  nav.tabs{position:sticky;top:0;z-index:20;background:rgba(11,13,18,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .tabrow{display:flex;gap:4px;overflow-x:auto;padding:4px 0}
+  .tab{
+    appearance:none;border:0;background:transparent;color:var(--mut);
+    padding:14px 18px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;
+    border-bottom:2px solid transparent;transition:color .15s,border-color .15s;
+  }
+  .tab:hover{color:var(--txt)}
+  .tab.active{color:#fff;border-bottom-color:var(--accent)}
+  .tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-left:7px;vertical-align:middle;opacity:.0}
+  .tab.active .dot{opacity:1}
+
+  main{padding:26px 0 80px}
+  .panel{display:none;animation:fade .25s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h2{font-size:18px;margin:0 0 4px;font-weight:700}
+  .lead{color:var(--mut);font-size:13.5px;margin:0 0 18px;max-width:820px}
+  .note{font-size:12px;color:var(--dim);font-style:italic}
+
+  /* Stat cards */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 22px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .stat .n{font-size:26px;font-weight:800;line-height:1}
+  .stat .l{color:var(--mut);font-size:12px;margin-top:5px;text-transform:uppercase;letter-spacing:.6px}
+  .stat.hero .n{color:var(--hero)} .stat.high .n{color:var(--high)}
+  .stat.med .n{color:var(--med)} .stat.low .n{color:var(--low)}
+
+  /* Controls */
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .controls input[type=search]{
+    background:var(--panel);border:1px solid var(--line2);border-radius:9px;color:var(--txt);
+    padding:9px 12px;font-size:13.5px;min-width:220px;flex:1 1 240px;max-width:360px;
+  }
+  .controls input::placeholder{color:var(--dim)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{
+    background:var(--panel);border:1px solid var(--line2);color:var(--mut);
+    padding:7px 12px;border-radius:20px;font-size:12.5px;cursor:pointer;font-weight:600;
+    transition:.15s;
+  }
+  .chip:hover{color:var(--txt);border-color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* Table */
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+  table{width:100%;border-collapse:collapse;min-width:820px}
+  th,td{text-align:left;padding:11px 14px;font-size:13px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel2);color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.7px;position:sticky;top:0}
+  tbody tr:hover{background:rgba(192,38,255,.05)}
+  tbody tr:last-child td{border-bottom:0}
+  td.id{color:var(--dim);font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+  td.desc{min-width:280px}
+  td.desc b{color:#fff;font-weight:600}
+  td.desc .scene{display:block;color:var(--dim);font-size:11.5px;margin-top:2px}
+
+  .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+  .pill.hero{background:rgba(192,38,255,.16);color:#e39bff;border:1px solid rgba(192,38,255,.4)}
+  .pill.high{background:rgba(255,84,112,.14);color:#ff97a8;border:1px solid rgba(255,84,112,.36)}
+  .pill.med{background:rgba(255,176,32,.14);color:#ffcf80;border:1px solid rgba(255,176,32,.34)}
+  .pill.low{background:rgba(52,211,153,.13);color:#8ff0c8;border:1px solid rgba(52,211,153,.32)}
+  .type{display:inline-block;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:600;background:var(--panel2);border:1px solid var(--line2);color:var(--mut);white-space:nowrap}
+  .status{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);font-weight:600}
+  .status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--dim)}
+  .status.bid::before{background:var(--dim)}
+  .status.previs::before{background:var(--cyan)}
+  .status.progress::before{background:var(--med)}
+
+  /* Generic cards / grid */
+  .grid{display:grid;gap:16px}
+  .grid.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .grid.three{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .card h3{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .card h3 .tag{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent)}
+  .card p{margin:0 0 8px;color:var(--mut);font-size:13px}
+  .card ul{margin:6px 0 0;padding-left:18px;color:var(--mut);font-size:13px}
+  .card ul li{margin:3px 0}
+  .kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .kv:last-child{border-bottom:0}
+  .kv span{color:var(--mut)} .kv b{color:var(--txt);font-weight:600}
+
+  /* Scene breakdown accordion */
+  .seq{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:12px;overflow:hidden}
+  .seq>summary{cursor:pointer;list-style:none;padding:14px 18px;display:flex;align-items:center;gap:12px;font-weight:700}
+  .seq>summary::-webkit-details-marker{display:none}
+  .seq>summary::before{content:"▸";color:var(--accent);transition:transform .2s}
+  .seq[open]>summary::before{transform:rotate(90deg)}
+  .seq .seqmeta{margin-left:auto;font-size:12px;color:var(--dim);font-weight:600}
+  .seq .body{padding:0 18px 16px 40px}
+  .seq .body ul{margin:4px 0;padding-left:16px;color:var(--mut);font-size:13.5px}
+  .seq .body li{margin:5px 0}
+  .seq .body li b{color:var(--txt)}
+
+  /* Pipeline board */
+  .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+  .col{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:80px}
+  .col h4{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);display:flex;justify-content:space-between}
+  .col h4 span{color:var(--dim)}
+  .ticket{background:var(--panel2);border:1px solid var(--line2);border-left:3px solid var(--accent);border-radius:7px;padding:8px 10px;margin-bottom:8px;font-size:12.5px}
+  .ticket small{color:var(--dim);display:block;margin-top:2px}
+  .ph{display:flex;gap:0;margin:0 0 22px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .ph div{flex:1;padding:10px 8px;text-align:center;font-size:11.5px;font-weight:700;color:var(--mut);border-right:1px solid var(--line);position:relative}
+  .ph div:last-child{border-right:0}
+  .ph div.done{background:rgba(52,211,153,.12);color:#8ff0c8}
+  .ph div.active{background:rgba(192,38,255,.16);color:#e39bff}
+
+  .audio-list{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+  .audio-list .row{display:flex;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:12.5px}
+  .audio-list .row:last-child{border-bottom:0}
+  .audio-list .row:hover{background:rgba(192,38,255,.05)}
+  .audio-list .cue{color:var(--accent);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .audio-list .line{color:var(--txt)}
+  .audio-list .vp{margin-left:auto;font-size:10.5px;color:var(--dim);white-space:nowrap}
+
+  footer{border-top:1px solid var(--line);color:var(--dim);font-size:12px;padding:20px 0 40px;text-align:center}
+  .hint{background:rgba(255,176,32,.08);border:1px solid rgba(255,176,32,.28);border-radius:10px;padding:12px 14px;font-size:12.5px;color:#ffcf80;margin:0 0 18px}
+  @media(max-width:640px){
+    .head{gap:12px}.badge-studio{margin-left:0;width:100%;text-align:left}
+    h1{font-size:19px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap head">
+    <div class="logo">NI</div>
+    <div>
+      <h1>NARCISSISTIC INSANITY <span class="thin">· VFX Production Hub</span></h1>
+      <div class="sub">Feature · Script v2.8 (95 pp.) · Based on "The 25th Demon" by JParker</div>
+    </div>
+    <div class="badge-studio">
+      <b>Levl Studio</b><br>VFX &amp; Virtual Production
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap tabrow" id="tabrow">
+    <button class="tab active" data-tab="tracker">VFX Shot Tracker<span class="dot"></span></button>
+    <button class="tab" data-tab="breakdown">Scene Breakdown<span class="dot"></span></button>
+    <button class="tab" data-tab="agi">AGI Character &amp; Assets<span class="dot"></span></button>
+    <button class="tab" data-tab="pipeline">Previs &amp; Pipeline<span class="dot"></span></button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ================= TAB 1: SHOT TRACKER ================= -->
+  <section class="panel active" id="tracker">
+    <h2>VFX Shot Tracker</h2>
+    <p class="lead">Initial VFX breakdown seeded from the shooting script. Shots are ranked by complexity so the hero/showcase work can be bid, previs'd, and budgeted first. Use the search and filters to slice by effect type or tier.</p>
+    <div class="stats" id="stats"></div>
+    <div class="controls">
+      <input type="search" id="q" placeholder="Search shots, scenes, effects…" />
+      <div class="chips" id="tierChips">
+        <span class="chip on" data-f="tier" data-v="all">All tiers</span>
+        <span class="chip" data-f="tier" data-v="Hero">Hero</span>
+        <span class="chip" data-f="tier" data-v="High">High</span>
+        <span class="chip" data-f="tier" data-v="Medium">Medium</span>
+        <span class="chip" data-f="tier" data-v="Low">Low</span>
+      </div>
+      <div class="chips" id="typeChips"></div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Shot / Sequence</th><th>Effect Type</th><th>Tier</th><th>Dept</th><th>Status</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p class="note" id="count" style="margin-top:10px"></p>
+    <p class="note">Status reflects a fresh breakdown — everything starts at <b>To Bid</b>. Update the <code>SHOTS</code> array in <code>index.html</code> (or wire to your tracker) as work moves through the pipeline.</p>
+  </section>
+
+  <!-- ================= TAB 2: SCENE BREAKDOWN ================= -->
+  <section class="panel" id="breakdown">
+    <h2>Scene Breakdown — VFX Requirements</h2>
+    <p class="lead">Where the visual-effects load sits across the script, grouped by the show's recurring FX systems. Expand a system to see the beats that feed it.</p>
+    <div id="seqs"></div>
+  </section>
+
+  <!-- ================= TAB 3: AGI CHARACTER & ASSETS ================= -->
+  <section class="panel" id="agi">
+    <h2>AGI — Character &amp; Assets</h2>
+    <p class="lead">AGI is PD's ever-present AI companion — a smiling face living across his Apple Watch, phone, and monitors, voice-over only. She is the single most recurring visual-effects and audio asset in the film, and her tone shifts after PD's mid-film "upgrade."</p>
+
+    <div class="grid two" style="margin-bottom:16px">
+      <div class="card">
+        <h3>🗣️ Voice <span class="tag">DELIVERED</span></h3>
+        <p>Custom ElevenLabs voice <b>"AGI - Narcissistic Insanity"</b> designed and saved to the ElevenCreative workspace. All 39 spoken lines rendered.</p>
+        <div class="kv"><span>Standard voice (cues 01–24)</span><b>Stability 0.50</b></div>
+        <div class="kv"><span>Upgraded / sultry (cues 25–39)</span><b>Stability 0.34</b></div>
+        <div class="kv"><span>Model</span><b>Eleven Multilingual v2</b></div>
+        <div class="kv"><span>Spoken lines</span><b>39</b></div>
+      </div>
+      <div class="card">
+        <h3>🎭 Character Image <span class="tag">PLANNED</span></h3>
+        <p>On-screen presence is a face/interface displayed on devices — no body. Build the look in <b>Higgsfield</b> as a reusable motion-graphic asset.</p>
+        <ul>
+          <li>Smiling AI face + interface skin (device screens, Apple Watch)</li>
+          <li>Two visual states: <b>calm</b> → <b>upgraded/seductive</b> (post p.51)</li>
+          <li>Pulse / waveform reactive to the audio cues</li>
+          <li>Glitch variant for the "dying AGI" beats</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid three" style="margin-bottom:16px">
+      <div class="stat"><div class="n" style="color:var(--low)">39</div><div class="l">Audio cues rendered</div></div>
+      <div class="stat"><div class="n" style="color:var(--accent)">24 / 15</div><div class="l">Standard / Upgraded</div></div>
+      <div class="stat"><div class="n" style="color:var(--med)">5</div><div class="l">Action-only triggers</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <h3>🔗 Assets in this repo</h3>
+      <ul>
+        <li><a href="assets/AGI_Cue_Sheet.md">AGI_Cue_Sheet.md</a> — human-readable cue sheet (trigger line → AGI response)</li>
+        <li><a href="assets/agi_cues.json">agi_cues.json</a> — structured cue data for the trigger app</li>
+      </ul>
+      <p class="note">Audio files live in the ElevenLabs account History under the AGI voice; drop the exported MP3s into <code>/assets/audio/</code> and this tab can preview them.</p>
+    </div>
+
+    <h3 style="margin:22px 0 10px;font-size:15px">All 39 AGI audio cues</h3>
+    <div class="audio-list" id="cuelist"></div>
+    <p class="note" style="margin-top:8px">The 3 "PD AI BOT" lines are the actor's cloned avatar voice — tracked separately, not part of the AGI voice set.</p>
+  </section>
+
+  <!-- ================= TAB 4: PREVIS & PIPELINE ================= -->
+  <section class="panel" id="pipeline">
+    <h2>Previs &amp; Pipeline</h2>
+    <p class="lead">Production status across the VFX pipeline, plus the previs priority list — the shots that most need to be designed before the camera rolls.</p>
+
+    <div class="ph">
+      <div class="active">Bid / Breakdown</div>
+      <div>Previs</div>
+      <div>Layout</div>
+      <div>Anim / FX</div>
+      <div>Comp</div>
+      <div>Final / QC</div>
+    </div>
+
+    <h3 style="margin:6px 0 10px;font-size:15px">Previs priority — design these first</h3>
+    <div class="grid two" style="margin-bottom:24px">
+      <div class="card">
+        <h3>🐊 Alligator feeding · <span class="pill hero">Hero</span></h3>
+        <p>CG creatures at the river's edge (and the baby-gator flashback). Needs creature design, water interaction, and a night-lighting lookdev pass. Recurs 3× — build once, reuse.</p>
+      </div>
+      <div class="card">
+        <h3>🪞 Mirror-self emergence (finale) · <span class="pill hero">Hero</span></h3>
+        <p>The reflection contorts, jaw unhinges, and steps <i>through</i> the glass. Hero transformation — previs the mechanic, plan practical mirror rig + digi-double + face FX.</p>
+      </div>
+      <div class="card">
+        <h3>🧑‍💻 AI-PD avatar takeover · <span class="pill hero">Hero</span></h3>
+        <p>PD's FaceTime image seamlessly becomes his AI clone. Face-replacement/deepfake methodology and plate strategy decided in previs. Recurs on the live-feed dick-show beat.</p>
+      </div>
+      <div class="card">
+        <h3>🎞️ AI-splice reveal (cyber unit) · <span class="pill hero">Hero</span></h3>
+        <p>Detectives spot real footage morphing into AI-generated (the lamp warps). A VFX-within-VFX gag — the "tell" must be designed deliberately.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:6px 0 10px;font-size:15px">Live status board</h3>
+    <div class="board" id="board"></div>
+    <p class="note" style="margin-top:14px">Board seeded from the shot tracker. As shots advance, move them across columns (edit <code>index.html</code>) or connect this view to ftrack / Shotgun / a Google Sheet.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  Narcissistic Insanity · VFX Production Hub — built for Levl Studio · Living document, initial breakdown from Script v2.8
+</footer>
+
+<script>
+/* ---------- DATA: seeded from Script v2.8 ---------- */
+const SHOTS = [
+  {id:1, d:"Wire strangulation of the older man (Dr. Sullivan client)", s:"INT. Hotel Suite · p.2–3", t:"Gore / Prosthetic", tier:"High"},
+  {id:2, d:"AGI device \"Erase it\" — footage wipe, room screens go dark", s:"Hotel Suite · p.3", t:"Screen FX", tier:"Medium"},
+  {id:3, d:"Title sequence: broken, multiplying, lagging mirrors over Atlanta skyline", s:"Title / City · p.3–4", t:"CG / Comp Montage", tier:"Hero"},
+  {id:4, d:"AGI smiling face across Apple Watch, phone & computer (recurring interface)", s:"Recurring", t:"Screen Graphics", tier:"Medium"},
+  {id:5, d:"Command-center screen wall: social clips, OnlySex metrics, sales dashboards", s:"Luxury House · p.4", t:"Screen Graphics", tier:"Medium"},
+  {id:6, d:"Hotel murder \"shadow footprint\" surfaces on monitor", s:"Command Center · p.5", t:"Screen Comp", tier:"Low"},
+  {id:7, d:"Vertical-studio live stream: climbing viewer counter + chat overlay", s:"Mini Studio · p.6", t:"Screen Graphics", tier:"Medium"},
+  {id:8, d:"AI-PD FaceTime avatar takeover (Monica call)", s:"Private Study · p.15", t:"Face Replace / Deepfake", tier:"Hero"},
+  {id:9, d:"AGI interface + Jessica banking profile / balance overlay", s:"Private Study · p.15–16", t:"UI / Hologram", tier:"Medium"},
+  {id:10, d:"\"Pending authentication\" glitch pulling Kara Kohl", s:"Private Study · p.16", t:"Screen FX", tier:"Low"},
+  {id:11, d:"Orgy in mirrored bedroom — reflections multiply the chaos", s:"Susan's Estate · p.18", t:"Comp / Multiplication", tier:"Medium"},
+  {id:12, d:"Uncle Mason apparition in mirror, then hovering over PD", s:"Susan's Estate · p.18–19", t:"Apparition / Comp", tier:"High"},
+  {id:13, d:"City block / street lights black out on \"Agi, erase it\"", s:"Jessica's Street · p.25", t:"Environment FX", tier:"High"},
+  {id:14, d:"Two alligators feed on the bodies at the river's edge", s:"River's Edge · p.25–26", t:"CG Creature", tier:"Hero"},
+  {id:15, d:"Burning victims' clothing in a can; PD dances by the fire", s:"Wooded Area · p.26", t:"Fire FX", tier:"Low"},
+  {id:16, d:"Monica's body dangling from 20th-floor scaffold, tangled in cable", s:"Highrise Crime Scene · p.27", t:"Rigging / CG", tier:"High"},
+  {id:17, d:"Wire snaps — Monica's head detaches and falls to Cuffie's feet", s:"Crime Scene · p.27–28", t:"Gore / CG", tier:"Hero"},
+  {id:18, d:"Uncle Mason mirror apparition with ice-cream cone", s:"PD's Room · p.30", t:"Apparition / Comp", tier:"High"},
+  {id:19, d:"\"CARD DEACTIVATED\" red-screen cascade", s:"PD's Bedroom · p.31", t:"Screen FX", tier:"Low"},
+  {id:20, d:"Kara's FORGE logo + hidden note reveal on screen", s:"PD's Bedroom · p.31–32", t:"Screen Graphics", tier:"Low"},
+  {id:21, d:"Split-screen video sessions with Dr. Sullivan (recurring)", s:"Recurring", t:"Screen Comp", tier:"Low"},
+  {id:22, d:"Kara profile compiling to PD's watch (encrypted download)", s:"Outside Kara's Office · p.46", t:"UI / Hologram", tier:"Low"},
+  {id:23, d:"AGI reboots to sleeker, seductive \"upgraded\" interface", s:"Home Office · p.51", t:"Motion Graphics", tier:"Medium"},
+  {id:24, d:"Murder montage — timestamped ghost clips play across monitors", s:"Home Office · p.52", t:"Screen Comp", tier:"Medium"},
+  {id:25, d:"Cyber-unit reveal: real footage morphs into AI-generated (lamp warps)", s:"Cybercrime Unit · p.50–51", t:"Face Replace / Deepfake", tier:"Hero"},
+  {id:26, d:"AI-PD bot takes over the live feed and continues the show", s:"Home Office · p.53–54", t:"Face Replace / Deepfake", tier:"High"},
+  {id:27, d:"\"Girl From The Sky\" live-feed performance graphics", s:"Living Room · p.57–58", t:"Screen Graphics", tier:"Low"},
+  {id:28, d:"Colette demonic apparition slaps PD; mirror scare", s:"Living Room · p.58–59", t:"Apparition / Comp", tier:"High"},
+  {id:29, d:"Reflection lag — PD's mirror-self falls out of sync, colder", s:"Living Room · p.75", t:"Reflection / Face FX", tier:"Hero"},
+  {id:30, d:"Childhood ice-cream flashback intercuts (Uncle Mason)", s:"Susan's Bedroom · p.78", t:"Comp / Period", tier:"Medium"},
+  {id:31, d:"Colette, Mason & young Martin materialize; mirror shatters, bloody fists", s:"Living Room · p.84–85", t:"Apparition / Comp", tier:"Hero"},
+  {id:32, d:"Back-room gunfight: chest hits, accidental fire, headshot + brain matter", s:"The Ace Back Room · p.42", t:"Blood / Squib + CG", tier:"High"},
+  {id:33, d:"Harold shot; smothering deaths (Jessica & Harold)", s:"Jessica's House · p.24", t:"Blood / Practical", tier:"Medium"},
+  {id:34, d:"Thrown hunting knife sinks into Kara's back mid-run", s:"Open Field · p.92", t:"Blood / CG", tier:"Medium"},
+  {id:35, d:"Cuffie shoots PD twice in the legs", s:"Open Field · p.92", t:"Blood / Squib", tier:"Medium"},
+  {id:36, d:"Sting-operation blackout on \"Agi, erase it\" during shootout", s:"Kara's House · p.90–91", t:"Environment FX", tier:"Medium"},
+  {id:37, d:"Cracked rearview reflections + flash cuts (gator mouth, fire)", s:"PD's Car · p.70", t:"Comp / Flash FX", tier:"Medium"},
+  {id:38, d:"Baby alligators at the riverbank (20-years-ago flashback)", s:"Riverbank Flashback · p.65", t:"CG Creature", tier:"Medium"},
+  {id:39, d:"FINALE: reflection contorts, jaw unhinges, mirror-self steps through glass", s:"Psych Ward Bathroom · p.94–95", t:"Creature Transformation", tier:"Hero"},
+  {id:40, d:"Dempsey Sr. one-shot head kill on the sidewalk", s:"Industrial Road · p.89", t:"Blood / Practical", tier:"Low"},
+];
+
+/* AGI audio cues */
+const CUES = [
+  ["01","Yes, PD.","STD"],["02","Good morning, PD.","STD"],["03","Your usual…","STD"],
+  ["04","Gross sales: $38,700 in the last 24 hours. However…","STD"],
+  ["05","You've been locked out of every major limited drop again…","STD"],
+  ["06","Correct. Priority access in your zones. Unknown entity…","STD"],
+  ["07","One more thing…","STD"],["08","This is a shadow footprint. It sometimes reappears.","STD"],
+  ["09","Understood. All traces removed.","STD"],
+  ["10","Uploading edited reel… Lip-sync generated… Posting to all platforms.","STD"],
+  ["11","Jessica M. Caldwell. Savings account accessed. Would you like to transfer?","STD"],
+  ["12","Transfer complete. Funds routed through a clean channel.","STD"],
+  ["13","Accessing… Pending authentication. Unusual delay.","STD"],
+  ["14","Still pending. Would you like me to keep trying?","STD"],
+  ["15","Understood.","STD"],["16","Good morning. Or should I say good afternoon.","STD"],
+  ["17","Checking.","STD"],["18","All linked accounts are locked. The encryption is quantum-resistant…","STD"],
+  ["19","I've tried every vector. This isn't amateur work.","STD"],
+  ["20","I understand you're upset.","STD"],["21","There is a hidden note.","STD"],
+  ["22","Would you like me to call Dr. Sullivan, trace the lock, or prepare a counter-proposal?","STD"],
+  ["23","Would you like me to create a new private journal file titled \"The Boy\"?","STD"],
+  ["24","I accessed her systems while she was purging files… I slipped in before the final wipe.","STD"],
+  ["25","Processing…","UPG"],["26","Upgrade complete. I feel… dangerous now.","UPG"],
+  ["27","These are residual ghost files. Hiccups in the background cache…","UPG"],
+  ["28","Why'd you kill them?","UPG"],["29","They're being permanently deleted now. I promise.","UPG"],
+  ["30","I understand. I will have your back as long as you're alive and well, PD.","UPG"],
+  ["31","Going live in three… two…","UPG"],["32","Generating…","UPG"],
+  ["33","Good morning, PD. You'll want to see this.","UPG"],["34","Playing.","UPG"],
+  ["35","Get it together, PD, your heart rate is elevated. Call Dr. Sullivan?","UPG"],
+  ["36","You know it.","UPG"],["37","Are you okay, PD?","UPG"],
+  ["38","Do you want me to call Dr. Sullivan?","UPG"],["39","Sorry—","UPG"],
+];
+
+/* Scene-breakdown systems */
+const SEQS = [
+  {name:"AGI screens & interface graphics", count:"12+ shots", items:[
+    "<b>Recurring device face</b> — AGI's smiling face on watch, phone, monitors; two states (calm → upgraded).",
+    "<b>Dashboards</b> — OnlySex metrics, sales, social clips on the command-center wall.",
+    "<b>Live-stream UI</b> — viewer counters, chat overlays, tip notifications.",
+    "<b>Data overlays</b> — banking profiles, encrypted downloads, FORGE logo, red \"CARD DEACTIVATED\".",
+  ]},
+  {name:"Deepfake / AI-avatar (face replacement)", count:"3 hero shots", items:[
+    "<b>AI-PD FaceTime takeover</b> (Monica call) — image becomes the AI clone mid-conversation.",
+    "<b>AI-PD live-feed bot</b> continues the show after PD steps away.",
+    "<b>Cyber-unit reveal</b> — real security footage morphs to AI-generated; the lamp warp is the tell.",
+  ]},
+  {name:"Mirror / reflection & apparitions", count:"7 shots", items:[
+    "<b>Title mirrors</b> — fragmented, multiplying, lagging reflections.",
+    "<b>Apparitions</b> — Uncle Mason, Colette, young Martin manifest in glass.",
+    "<b>Reflection lag</b> — PD's mirror-self falls out of sync during the live feed.",
+    "<b>Finale</b> — reflection contorts and steps physically through the mirror (hero transformation).",
+  ]},
+  {name:"CG creatures — alligators", count:"3 shots", items:[
+    "<b>River feeding</b> — two adult gators consume the wrapped bodies (night, water interaction).",
+    "<b>Baby gators</b> — young PD plays with them in the 20-years-ago flashback.",
+    "<b>Flash cut</b> — a gator's mouth raging out of the water (car-drive intercut).",
+  ]},
+  {name:"Gore, squibs & practical-plus", count:"8 shots", items:[
+    "<b>Wire kills</b> — strangulation cord (hotel, montage) with neck prosthetics.",
+    "<b>Monica</b> — 20-story fall rig, scaffold entanglement, head detachment.",
+    "<b>Back-room gunfight</b> — chest squibs, headshot + brain matter on Vicker.",
+    "<b>Assorted</b> — Harold, Kara's knife, PD's legs, Dempsey Sr. head shot.",
+  ]},
+  {name:"Environment & hack FX", count:"3 shots", items:[
+    "<b>Blackouts</b> — AGI kills street lights / building power on command; lights restore as PD leaves.",
+    "<b>EMP-adjacent disruptor</b> — cameras die for exactly 60 seconds.",
+    "<b>Fire</b> — burning evidence, dance-by-flame beats.",
+  ]},
+];
+
+/* ---------- RENDER ---------- */
+const tierClass = t => ({Hero:"hero",High:"high",Medium:"med",Low:"low"}[t]||"low");
+
+function renderStats(){
+  const by = t => SHOTS.filter(s=>s.tier===t).length;
+  const el = document.getElementById('stats');
+  el.innerHTML = [
+    ['Total shots', SHOTS.length, ''],
+    ['Hero', by('Hero'), 'hero'],
+    ['High', by('High'), 'high'],
+    ['Medium', by('Medium'), 'med'],
+    ['Low', by('Low'), 'low'],
+  ].map(([l,n,c])=>`<div class="stat ${c}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+}
+
+function renderTypeChips(){
+  const types = [...new Set(SHOTS.map(s=>s.t))].sort();
+  const el = document.getElementById('typeChips');
+  el.innerHTML = `<span class="chip on" data-f="type" data-v="all">All types</span>` +
+    types.map(t=>`<span class="chip" data-f="type" data-v="${t}">${t}</span>`).join('');
+}
+
+let F = {tier:'all', type:'all', q:''};
+function renderRows(){
+  const q = F.q.toLowerCase();
+  const list = SHOTS.filter(s=>
+    (F.tier==='all'||s.tier===F.tier) &&
+    (F.type==='all'||s.t===F.type) &&
+    (!q || (s.d+' '+s.s+' '+s.t).toLowerCase().includes(q))
+  );
+  document.getElementById('rows').innerHTML = list.map(s=>`
+    <tr>
+      <td class="id">${String(s.id).padStart(2,'0')}</td>
+      <td class="desc"><b>${s.d}</b><span class="scene">${s.s}</span></td>
+      <td><span class="type">${s.t}</span></td>
+      <td><span class="pill ${tierClass(s.tier)}">${s.tier}</span></td>
+      <td style="color:var(--mut)">${dept(s.t)}</td>
+      <td><span class="status bid">To Bid</span></td>
+    </tr>`).join('') || `<tr><td colspan="6" style="color:var(--dim);padding:24px;text-align:center">No shots match.</td></tr>`;
+  document.getElementById('count').textContent = `Showing ${list.length} of ${SHOTS.length} shots`;
+}
+function dept(t){
+  if(/Creature/.test(t)) return 'CG / Creature';
+  if(/Face Replace|Deepfake/.test(t)) return 'AI / Comp';
+  if(/Screen|UI|Hologram|Motion/.test(t)) return 'Motion GFX';
+  if(/Apparition|Reflection|Comp|Transformation|Montage/.test(t)) return 'Compositing';
+  if(/Gore|Blood|Squib|Prosthetic/.test(t)) return 'SFX / Comp';
+  if(/Fire|Environment/.test(t)) return 'FX / Env';
+  return 'Comp';
+}
+
+function renderCues(){
+  document.getElementById('cuelist').innerHTML = CUES.map(([n,l,v])=>`
+    <div class="row">
+      <span class="cue">AGI-${n}</span>
+      <span class="line">${l}</span>
+      <span class="vp">${v==='UPG'?'UPGRADED':'standard'}</span>
+    </div>`).join('');
+}
+
+function renderSeqs(){
+  document.getElementById('seqs').innerHTML = SEQS.map((s,i)=>`
+    <details class="seq" ${i===0?'open':''}>
+      <summary>${s.name}<span class="seqmeta">${s.count}</span></summary>
+      <div class="body"><ul>${s.items.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    </details>`).join('');
+}
+
+function renderBoard(){
+  const cols = [
+    ['To Bid', SHOTS],
+    ['Previs', []],
+    ['Layout', []],
+    ['Anim / FX', []],
+    ['Comp', []],
+    ['Final / QC', []],
+  ];
+  document.getElementById('board').innerHTML = cols.map(([name,items])=>`
+    <div class="col">
+      <h4>${name}<span>${items.length}</span></h4>
+      ${items.slice(0,6).map(s=>`<div class="ticket">${String(s.id).padStart(2,'0')} · ${s.d.slice(0,42)}${s.d.length>42?'…':''}<small>${s.tier} · ${s.t}</small></div>`).join('')}
+      ${items.length>6?`<div class="ticket" style="border-left-color:var(--dim);color:var(--dim)">+ ${items.length-6} more</div>`:''}
+    </div>`).join('');
+}
+
+/* ---------- INTERACTIONS ---------- */
+document.getElementById('tabrow').addEventListener('click', e=>{
+  const b = e.target.closest('.tab'); if(!b) return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===b));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===b.dataset.tab));
+  history.replaceState(null,'', '#'+b.dataset.tab);
+});
+document.querySelectorAll('#tierChips, #typeChips').forEach(g=>{
+  g.addEventListener('click', e=>{
+    const c = e.target.closest('.chip'); if(!c) return;
+    const f = c.dataset.f;
+    c.parentElement.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x===c));
+    F[f] = c.dataset.v; renderRows();
+  });
+});
+document.getElementById('q').addEventListener('input', e=>{ F.q = e.target.value; renderRows(); });
+
+/* deep-link to a tab via hash */
+(function initHash(){
+  const h = (location.hash||'').replace('#','');
+  if(h && document.getElementById(h)){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===h));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===h));
+  }
+})();
+
+renderStats(); renderTypeChips(); renderRows(); renderCues(); renderSeqs(); renderBoard();
+</script>
+</body>
+</html>
