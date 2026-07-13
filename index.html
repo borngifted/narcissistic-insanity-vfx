@@ -164,9 +164,29 @@
 
   footer{border-top:1px solid var(--line);color:var(--dim);font-size:12px;padding:20px 0 40px;text-align:center}
   .hint{background:rgba(255,176,32,.08);border:1px solid rgba(255,176,32,.28);border-radius:10px;padding:12px 14px;font-size:12.5px;color:#ffcf80;margin:0 0 18px}
+  /* Character sheet figure */
+  figure.sheet{margin:0 0 20px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
+  figure.sheet img{display:block;width:100%;height:auto}
+  figure.sheet figcaption{padding:11px 16px;color:var(--mut);font-size:12.5px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  figure.sheet figcaption b{color:var(--txt)}
+  figure.sheet figcaption .sp{margin-left:auto}
+
+  /* Audio tab */
+  .aud-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+  .aud-grid{display:grid;gap:10px}
+  .aud{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px 14px}
+  .aud[data-preset="UPG"]{border-left:3px solid var(--hero)}
+  .aud[data-preset="STD"]{border-left:3px solid var(--cyan)}
+  .aud .cueid{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;font-size:13px}
+  .aud .cueid small{display:block;color:var(--dim);font-size:9.5px;font-weight:700;letter-spacing:.4px;margin-top:2px}
+  .aud .line{color:var(--txt);font-size:13.5px;margin-bottom:6px}
+  .aud audio{width:100%;height:34px;display:block}
+  .aud .pending{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--med);font-weight:600}
+  .aud .pending::before{content:"⧗";font-size:14px}
   @media(max-width:640px){
     .head{gap:12px}.badge-studio{margin-left:0;width:100%;text-align:left}
     h1{font-size:19px}
+    .aud{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -190,6 +210,7 @@
     <button class="tab" data-tab="breakdown">Scene Breakdown<span class="dot"></span></button>
     <button class="tab" data-tab="agi">AGI Character &amp; Assets<span class="dot"></span></button>
     <button class="tab" data-tab="pipeline">Previs &amp; Pipeline<span class="dot"></span></button>
+    <button class="tab" data-tab="audio">Audio <span style="opacity:.55">· 39</span><span class="dot"></span></button>
   </div>
 </nav>
 
@@ -235,6 +256,14 @@
     <h2>AGI — Character &amp; Assets</h2>
     <p class="lead">AGI is PD's ever-present AI companion — a smiling face living across his Apple Watch, phone, and monitors, voice-over only. She is the single most recurring visual-effects and audio asset in the film, and her tone shifts after PD's mid-film "upgrade."</p>
 
+    <figure class="sheet">
+      <img src="assets/agi-character-sheet.png" alt="AGI character reference sheet — front, three-quarter and profile views with expression studies" loading="lazy" />
+      <figcaption>
+        <b>AGI — Character Reference Sheet</b> · generated with Higgsfield Soul 2.0
+        <span class="sp"><a href="assets/agi-character-sheet.png" target="_blank">Full-res ↗</a> &nbsp;·&nbsp; <a href="assets/agi-character-sheet-alt.png" target="_blank">Alt variation ↗</a></span>
+      </figcaption>
+    </figure>
+
     <div class="grid two" style="margin-bottom:16px">
       <div class="card">
         <h3>🗣️ Voice <span class="tag">DELIVERED</span></h3>
@@ -245,13 +274,13 @@
         <div class="kv"><span>Spoken lines</span><b>39</b></div>
       </div>
       <div class="card">
-        <h3>🎭 Character Image <span class="tag">PLANNED</span></h3>
-        <p>On-screen presence is a face/interface displayed on devices — no body. Build the look in <b>Higgsfield</b> as a reusable motion-graphic asset.</p>
+        <h3>🎭 Character Image <span class="tag">DELIVERED</span></h3>
+        <p>Character design generated with <b>Higgsfield Soul 2.0</b> (see sheet above). On-screen she reads as a face/interface across devices — no body.</p>
         <ul>
-          <li>Smiling AI face + interface skin (device screens, Apple Watch)</li>
+          <li>Front, three-quarter &amp; profile turnaround + expression studies</li>
           <li>Two visual states: <b>calm</b> → <b>upgraded/seductive</b> (post p.51)</li>
-          <li>Pulse / waveform reactive to the audio cues</li>
-          <li>Glitch variant for the "dying AGI" beats</li>
+          <li>Holographic skin, magenta/cyan neon, reflective bob — pulse/waveform reactive</li>
+          <li>Glitch/corrupted variant for the "dying AGI" beats</li>
         </ul>
       </div>
     </div>
@@ -313,6 +342,23 @@
     <h3 style="margin:6px 0 10px;font-size:15px">Live status board</h3>
     <div class="board" id="board"></div>
     <p class="note" style="margin-top:14px">Board seeded from the shot tracker. As shots advance, move them across columns (edit <code>index.html</code>) or connect this view to ftrack / Shotgun / a Google Sheet.</p>
+  </section>
+
+  <!-- ================= TAB 5: AUDIO ================= -->
+  <section class="panel" id="audio">
+    <h2>AGI Audio Cues</h2>
+    <p class="lead">All 39 of AGI's spoken lines, rendered in the custom ElevenLabs voice. Standard delivery for cues 01–24; the sultrier "upgraded" voice for 25–39. Use these as trigger clips synced to the actor's lines on set / in the interactive app.</p>
+    <div class="stats" id="audioStats"></div>
+    <div class="aud-controls">
+      <div class="chips" id="audChips">
+        <span class="chip on" data-v="all">All 39</span>
+        <span class="chip" data-v="STD">Standard (24)</span>
+        <span class="chip" data-v="UPG">Upgraded (15)</span>
+      </div>
+    </div>
+    <div class="hint" id="audHint"></div>
+    <div class="aud-grid" id="audGrid"></div>
+    <p class="note" style="margin-top:12px">Files load from <code>assets/audio/agi-01.mp3 … agi-39.mp3</code>. Cues showing “audio pending” just need the exported MP3 dropped into that folder — the player lights up automatically on the next push.</p>
   </section>
 
 </main>
@@ -545,7 +591,40 @@ document.getElementById('q').addEventListener('input', e=>{ F.q = e.target.value
   }
 })();
 
+/* ---------- AUDIO TAB ---------- */
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let AUDF = 'all';
+function renderAudioStats(){
+  const std = CUES.filter(c=>c[2]==='STD').length, upg = CUES.filter(c=>c[2]==='UPG').length;
+  document.getElementById('audioStats').innerHTML = [
+    ['Total cues', CUES.length, ''],
+    ['Standard voice', std, 'low'],
+    ['Upgraded voice', upg, 'hero'],
+  ].map(([l,n,c])=>`<div class="stat ${c}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+  document.getElementById('audHint').textContent =
+    'Row colour = voice preset: cyan bar = standard (01–24), magenta bar = upgraded/sultry (25–39). Players stream from /assets/audio/.';
+}
+function renderAudio(){
+  const list = CUES.filter(c => AUDF==='all' || c[2]===AUDF);
+  document.getElementById('audGrid').innerHTML = list.map(([n,l,v])=>`
+    <div class="aud" data-preset="${v}">
+      <div class="cueid">AGI-${n}<small>${v==='UPG'?'UPGRADED':'STANDARD'}</small></div>
+      <div>
+        <div class="line">${esc(l)}</div>
+        <audio controls preload="metadata" src="assets/audio/agi-${n}.mp3"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'"></audio>
+        <span class="pending" style="display:none">audio pending — add agi-${n}.mp3</span>
+      </div>
+    </div>`).join('');
+}
+document.getElementById('audChips').addEventListener('click', e=>{
+  const c = e.target.closest('.chip'); if(!c) return;
+  c.parentElement.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x===c));
+  AUDF = c.dataset.v; renderAudio();
+});
+
 renderStats(); renderTypeChips(); renderRows(); renderCues(); renderSeqs(); renderBoard();
+renderAudioStats(); renderAudio();
 </script>
 </body>
 </html>
