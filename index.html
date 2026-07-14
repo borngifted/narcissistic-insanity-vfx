@@ -3,464 +3,479 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Narcissistic Insanity — VFX Production Hub</title>
-<meta name="description" content="VFX production hub for Narcissistic Insanity — shot tracker, scene breakdown, AGI character assets, and pipeline status. Levl Studio." />
+<title>project://insanity — vfx production hub</title>
+<meta name="description" content="VFX production hub for Narcissistic Insanity — shot tracker, scene breakdown, AGI character assets, pipeline status, live AGI console. Levl Studio." />
 <style>
-  :root{
-    --bg:#0b0d12; --bg2:#0f121a; --panel:#151925; --panel2:#1b2130;
-    --line:#262d3d; --line2:#333b50;
-    --txt:#e8ebf2; --mut:#9aa3b7; --dim:#6b7488;
-    --mag:#c026ff; --pink:#ff2e88; --cyan:#22d3ee;
-    --hero:#c026ff; --high:#ff5470; --med:#ffb020; --low:#34d399;
-    --accent:#c026ff;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{
-    background:
-      radial-gradient(1200px 600px at 80% -10%, rgba(192,38,255,.14), transparent 60%),
-      radial-gradient(900px 500px at -10% 10%, rgba(255,46,136,.10), transparent 55%),
-      var(--bg);
-    color:var(--txt);
-    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-  }
-  a{color:var(--pink);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600;700&family=Oswald:wght@500;600;700&display=swap");
 
-  /* Header */
-  header{border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(21,25,37,.6),transparent)}
-  .head{display:flex;align-items:center;gap:18px;padding:22px 0 18px;flex-wrap:wrap}
-  .logo{
-    width:46px;height:46px;border-radius:11px;flex:0 0 auto;
-    background:linear-gradient(135deg,var(--mag),var(--pink));
-    display:grid;place-items:center;font-weight:800;font-size:20px;color:#fff;
-    box-shadow:0 6px 24px rgba(192,38,255,.4);
-  }
-  h1{font-size:22px;margin:0;letter-spacing:.5px;font-weight:800}
-  h1 .thin{color:var(--mut);font-weight:500}
-  .sub{color:var(--mut);font-size:13px;margin-top:2px}
-  .badge-studio{margin-left:auto;text-align:right;color:var(--mut);font-size:12px;line-height:1.4}
-  .badge-studio b{color:var(--txt)}
+:root{
+  --red:#f00;
+  --red-dim:rgba(255,0,0,.55);
+  --red-faint:rgba(255,0,0,.22);
+  --red-line:rgba(255,0,0,.35);
+  --blk:#000;
+  --crt:0 0 2px rgba(255,0,0,.65), 0 0 6px rgba(255,0,0,.28);
+  --crt-blk:0 0 2px rgba(0,0,0,.55);
+  --mono:"Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --cond:"Oswald", "Trade Gothic Next LT Pro Cn", Impact, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--blk);
+  color:var(--red);
+  font-family:var(--mono);
+  font-size:14px;
+  line-height:1.4;
+  letter-spacing:-.03em;
+  text-transform:lowercase;
+  min-height:100vh;
+  overflow-x:clip;
+}
+/* CRT scanlines + glow */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:999;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+  mix-blend-mode:multiply;
+}
+body{text-shadow:var(--crt)}
+a{color:var(--red);text-decoration:none}
+a:hover{background:var(--red);color:var(--blk);text-shadow:var(--crt-blk)}
+::selection{background:var(--red);color:var(--blk)}
 
-  /* Tabs */
-  nav.tabs{position:sticky;top:0;z-index:20;background:rgba(11,13,18,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .tabrow{display:flex;gap:4px;overflow-x:auto;padding:4px 0}
-  .tab{
-    appearance:none;border:0;background:transparent;color:var(--mut);
-    padding:14px 18px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;
-    border-bottom:2px solid transparent;transition:color .15s,border-color .15s;
-  }
-  .tab:hover{color:var(--txt)}
-  .tab.active{color:#fff;border-bottom-color:var(--accent)}
-  .tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-left:7px;vertical-align:middle;opacity:.0}
-  .tab.active .dot{opacity:1}
+.wrap{max-width:1400px;margin:0 auto;padding:0 2.2vw}
 
-  main{padding:26px 0 80px}
-  .panel{display:none;animation:fade .25s ease}
-  .panel.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* ============ LOADER ============ */
+#loader{
+  position:fixed;inset:0;background:var(--blk);z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .5s;
+}
+#loader.off{opacity:0;pointer-events:none}
+#loader .box{width:min(560px,86vw);font-size:14px}
+#loader .ln{margin:3px 0;min-height:18px}
+#loader .pct{font-size:44px;font-weight:700;margin-top:18px}
+#loader .cur::after{content:"▊";animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
 
-  h2{font-size:18px;margin:0 0 4px;font-weight:700}
-  .lead{color:var(--mut);font-size:13.5px;margin:0 0 18px;max-width:820px}
-  .note{font-size:12px;color:var(--dim);font-style:italic}
+/* ============ HEADER ============ */
+header{border-bottom:1px solid var(--red-line);position:sticky;top:0;background:rgba(0,0,0,.92);backdrop-filter:blur(4px);z-index:50}
+.head-top{display:flex;align-items:baseline;gap:22px;padding:14px 0 10px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:16px;white-space:nowrap}
+.brand em{font-style:normal;opacity:.65}
+.clocks{display:flex;gap:18px;margin-left:auto;font-size:12px;opacity:.85;flex-wrap:wrap}
+.clocks span b{font-weight:400}
+.head-nav{display:flex;gap:2px;padding:0 0 0;flex-wrap:wrap}
+.tab{
+  appearance:none;border:0;background:transparent;color:var(--red);
+  font-family:var(--mono);font-size:13.5px;letter-spacing:-.03em;text-transform:lowercase;
+  padding:10px 14px;cursor:pointer;text-shadow:var(--crt);
+}
+.tab:hover{background:var(--red);color:var(--blk);text-shadow:var(--crt-blk)}
+.tab.active{background:var(--red);color:var(--blk);font-weight:700;text-shadow:var(--crt-blk)}
 
-  /* Stat cards */
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 22px}
-  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-  .stat .n{font-size:26px;font-weight:800;line-height:1}
-  .stat .l{color:var(--mut);font-size:12px;margin-top:5px;text-transform:uppercase;letter-spacing:.6px}
-  .stat.hero .n{color:var(--hero)} .stat.high .n{color:var(--high)}
-  .stat.med .n{color:var(--med)} .stat.low .n{color:var(--low)}
+main{padding:34px 0 90px}
+.panel{display:none}
+.panel.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
 
-  /* Controls */
-  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
-  .controls input[type=search]{
-    background:var(--panel);border:1px solid var(--line2);border-radius:9px;color:var(--txt);
-    padding:9px 12px;font-size:13.5px;min-width:220px;flex:1 1 240px;max-width:360px;
-  }
-  .controls input::placeholder{color:var(--dim)}
-  .chips{display:flex;gap:6px;flex-wrap:wrap}
-  .chip{
-    background:var(--panel);border:1px solid var(--line2);color:var(--mut);
-    padding:7px 12px;border-radius:20px;font-size:12.5px;cursor:pointer;font-weight:600;
-    transition:.15s;
-  }
-  .chip:hover{color:var(--txt);border-color:var(--accent)}
-  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+/* ============ TYPE ============ */
+h2{
+  font-family:var(--cond);font-weight:700;text-transform:uppercase;
+  font-size:clamp(28px,4.2vw,54px);line-height:.95;letter-spacing:.01em;
+  margin:0 0 14px;
+}
+.lead{max-width:70ch;opacity:.85;margin:0 0 26px}
+.note{font-size:11.5px;opacity:.6;margin-top:10px}
+h3.sec{font-family:var(--cond);font-weight:600;text-transform:uppercase;font-size:22px;margin:30px 0 12px}
 
-  /* Table */
-  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
-  table{width:100%;border-collapse:collapse;min-width:820px}
-  th,td{text-align:left;padding:11px 14px;font-size:13px;border-bottom:1px solid var(--line);vertical-align:top}
-  th{background:var(--panel2);color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.7px;position:sticky;top:0}
-  tbody tr:hover{background:rgba(192,38,255,.05)}
-  tbody tr:last-child td{border-bottom:0}
-  td.id{color:var(--dim);font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
-  td.desc{min-width:280px}
-  td.desc b{color:#fff;font-weight:600}
-  td.desc .scene{display:block;color:var(--dim);font-size:11.5px;margin-top:2px}
+/* ============ STATS ============ */
+.stats{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--red-line);margin:0 0 24px}
+.stat{flex:1 1 120px;padding:14px 16px;border-right:1px solid var(--red-line)}
+.stat:last-child{border-right:0}
+.stat .n{font-size:34px;font-weight:700;line-height:1}
+.stat .l{font-size:11px;opacity:.7;margin-top:4px}
 
-  .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
-  .pill.hero{background:rgba(192,38,255,.16);color:#e39bff;border:1px solid rgba(192,38,255,.4)}
-  .pill.high{background:rgba(255,84,112,.14);color:#ff97a8;border:1px solid rgba(255,84,112,.36)}
-  .pill.med{background:rgba(255,176,32,.14);color:#ffcf80;border:1px solid rgba(255,176,32,.34)}
-  .pill.low{background:rgba(52,211,153,.13);color:#8ff0c8;border:1px solid rgba(52,211,153,.32)}
-  .type{display:inline-block;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:600;background:var(--panel2);border:1px solid var(--line2);color:var(--mut);white-space:nowrap}
-  .status{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);font-weight:600}
-  .status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--dim)}
-  .status.bid::before{background:var(--dim)}
-  .status.previs::before{background:var(--cyan)}
-  .status.progress::before{background:var(--med)}
+/* ============ CONTROLS ============ */
+.controls{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+input[type=search]{
+  background:transparent;border:1px solid var(--red-line);color:var(--red);
+  font-family:var(--mono);font-size:13px;padding:8px 12px;min-width:240px;
+  text-transform:lowercase;letter-spacing:-.03em;text-shadow:var(--crt);
+}
+input[type=search]::placeholder{color:var(--red-dim)}
+input[type=search]:focus{outline:1px solid var(--red)}
+.chips{display:flex;gap:2px;flex-wrap:wrap}
+.chip{
+  background:transparent;border:0;color:var(--red);cursor:pointer;
+  font-family:var(--mono);font-size:12.5px;padding:6px 8px;text-shadow:var(--crt);
+  text-transform:lowercase;letter-spacing:-.03em;
+}
+.chip::before{content:"["}
+.chip::after{content:"]"}
+.chip:hover{background:var(--red);color:var(--blk);text-shadow:var(--crt-blk)}
+.chip.on{background:var(--red);color:var(--blk);font-weight:700;text-shadow:var(--crt-blk)}
 
-  /* Generic cards / grid */
-  .grid{display:grid;gap:16px}
-  .grid.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
-  .grid.three{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
-  .card h3{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:8px}
-  .card h3 .tag{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent)}
-  .card p{margin:0 0 8px;color:var(--mut);font-size:13px}
-  .card ul{margin:6px 0 0;padding-left:18px;color:var(--mut);font-size:13px}
-  .card ul li{margin:3px 0}
-  .kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
-  .kv:last-child{border-bottom:0}
-  .kv span{color:var(--mut)} .kv b{color:var(--txt);font-weight:600}
+/* ============ TABLE ============ */
+.tablewrap{overflow-x:auto;border:1px solid var(--red-line)}
+table{width:100%;border-collapse:collapse;min-width:840px}
+th,td{text-align:left;padding:9px 12px;font-size:12.5px;border-bottom:1px solid var(--red-faint);vertical-align:top}
+th{font-weight:700;font-size:11px;border-bottom:1px solid var(--red-line);position:sticky;top:0;background:var(--blk)}
+tbody tr:hover{background:var(--red)}
+tbody tr:hover td, tbody tr:hover td *{color:var(--blk)!important;text-shadow:var(--crt-blk)}
+tbody tr:last-child td{border-bottom:0}
+td.id{opacity:.6;font-weight:700;white-space:nowrap}
+td.desc{min-width:300px}
+td.desc b{font-weight:600}
+td.desc .scene{display:block;opacity:.55;font-size:11px;margin-top:2px}
+.mark{white-space:nowrap;font-weight:700}
+.mark::before{content:"["}
+.mark::after{content:"]"}
 
-  /* Scene breakdown accordion */
-  .seq{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:12px;overflow:hidden}
-  .seq>summary{cursor:pointer;list-style:none;padding:14px 18px;display:flex;align-items:center;gap:12px;font-weight:700}
-  .seq>summary::-webkit-details-marker{display:none}
-  .seq>summary::before{content:"▸";color:var(--accent);transition:transform .2s}
-  .seq[open]>summary::before{transform:rotate(90deg)}
-  .seq .seqmeta{margin-left:auto;font-size:12px;color:var(--dim);font-weight:600}
-  .seq .body{padding:0 18px 16px 40px}
-  .seq .body ul{margin:4px 0;padding-left:16px;color:var(--mut);font-size:13.5px}
-  .seq .body li{margin:5px 0}
-  .seq .body li b{color:var(--txt)}
+/* ============ CARDS / GRID ============ */
+.grid{display:grid;gap:0;border:1px solid var(--red-line)}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{padding:18px;border:1px solid var(--red-faint);margin:-1px 0 0 -1px}
+.card h3{font-size:14px;font-weight:700;margin:0 0 10px}
+.card p{opacity:.85;margin:0 0 8px;font-size:13px}
+.card ul{margin:6px 0 0;padding-left:16px;font-size:13px;opacity:.85}
+.card ul li{margin:4px 0}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed var(--red-faint);font-size:12.5px}
+.kv:last-child{border-bottom:0}
+.kv span{opacity:.7}.kv b{font-weight:600}
 
-  /* Pipeline board */
-  .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
-  .col{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:80px}
-  .col h4{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);display:flex;justify-content:space-between}
-  .col h4 span{color:var(--dim)}
-  .ticket{background:var(--panel2);border:1px solid var(--line2);border-left:3px solid var(--accent);border-radius:7px;padding:8px 10px;margin-bottom:8px;font-size:12.5px}
-  .ticket small{color:var(--dim);display:block;margin-top:2px}
-  .ph{display:flex;gap:0;margin:0 0 22px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-  .ph div{flex:1;padding:10px 8px;text-align:center;font-size:11.5px;font-weight:700;color:var(--mut);border-right:1px solid var(--line);position:relative}
-  .ph div:last-child{border-right:0}
-  .ph div.done{background:rgba(52,211,153,.12);color:#8ff0c8}
-  .ph div.active{background:rgba(192,38,255,.16);color:#e39bff}
+/* ============ ACCORDION ============ */
+details.seq{border:1px solid var(--red-line);margin-bottom:-1px}
+details.seq>summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;display:flex;gap:12px;align-items:center}
+details.seq>summary::-webkit-details-marker{display:none}
+details.seq>summary::before{content:">>";font-weight:400}
+details.seq[open]>summary{background:var(--red);color:var(--blk);text-shadow:var(--crt-blk)}
+details.seq .seqmeta{margin-left:auto;font-size:11.5px;opacity:.7;font-weight:400}
+details.seq .body{padding:6px 18px 16px 40px}
+details.seq .body ul{padding-left:14px;font-size:13px}
+details.seq .body li{margin:6px 0;opacity:.9}
+details.seq .body li b{font-weight:600}
 
-  .audio-list{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:10px}
-  .audio-list .row{display:flex;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:12.5px}
-  .audio-list .row:last-child{border-bottom:0}
-  .audio-list .row:hover{background:rgba(192,38,255,.05)}
-  .audio-list .cue{color:var(--accent);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
-  .audio-list .line{color:var(--txt)}
-  .audio-list .vp{margin-left:auto;font-size:10.5px;color:var(--dim);white-space:nowrap}
+/* ============ FIGURES ============ */
+figure.sheet{margin:0 0 22px;border:1px solid var(--red-line)}
+figure.sheet img{display:block;width:100%;height:auto;filter:none}
+figure.sheet figcaption{padding:10px 14px;font-size:12px;display:flex;gap:12px;flex-wrap:wrap;border-top:1px solid var(--red-line)}
+figure.sheet figcaption b{font-weight:700}
+figure.sheet figcaption .sp{margin-left:auto}
 
-  footer{border-top:1px solid var(--line);color:var(--dim);font-size:12px;padding:20px 0 40px;text-align:center}
-  .hint{background:rgba(255,176,32,.08);border:1px solid rgba(255,176,32,.28);border-radius:10px;padding:12px 14px;font-size:12.5px;color:#ffcf80;margin:0 0 18px}
-  /* Character sheet figure */
-  figure.sheet{margin:0 0 20px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
-  figure.sheet img{display:block;width:100%;height:auto}
-  figure.sheet figcaption{padding:11px 16px;color:var(--mut);font-size:12.5px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  figure.sheet figcaption b{color:var(--txt)}
-  figure.sheet figcaption .sp{margin-left:auto}
+/* ============ BOARD ============ */
+.ph{display:flex;border:1px solid var(--red-line);margin:0 0 24px}
+.ph div{flex:1;padding:9px 8px;text-align:center;font-size:11px;font-weight:700;border-right:1px solid var(--red-faint)}
+.ph div:last-child{border-right:0}
+.ph div.active{background:var(--red);color:var(--blk);text-shadow:var(--crt-blk)}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0;border:1px solid var(--red-line)}
+.col{padding:12px;border:1px solid var(--red-faint);margin:-1px 0 0 -1px;min-height:90px}
+.col h4{font-size:11px;font-weight:700;margin:0 0 10px;display:flex;justify-content:space-between}
+.ticket{border:1px solid var(--red-faint);border-left:3px solid var(--red);padding:7px 9px;margin-bottom:7px;font-size:11.5px}
+.ticket small{opacity:.6;display:block;margin-top:2px}
 
-  /* Audio tab */
-  .aud-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
-  .aud-grid{display:grid;gap:10px}
-  .aud{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px 14px}
-  .aud[data-preset="UPG"]{border-left:3px solid var(--hero)}
-  .aud[data-preset="STD"]{border-left:3px solid var(--cyan)}
-  .aud .cueid{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;font-size:13px}
-  .aud .cueid small{display:block;color:var(--dim);font-size:9.5px;font-weight:700;letter-spacing:.4px;margin-top:2px}
-  .aud .line{color:var(--txt);font-size:13.5px;margin-bottom:6px}
-  .aud audio{width:100%;height:34px;display:block}
-  .aud .pending{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--med);font-weight:600}
-  .aud .pending::before{content:"⧗";font-size:14px}
-  /* ===== AGI://LIVE — interactive terminal hub ===== */
-  .tab.live{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.4px;color:var(--cyan)}
-  .tab.live:hover{color:#8eeafb}
-  .tab.live.active{color:#fff;border-bottom-color:var(--cyan)}
-  .term{position:relative;background:#04060b;border:1px solid var(--line2);border-radius:14px;overflow:hidden;
-    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    box-shadow:0 0 70px rgba(34,211,238,.07);transition:box-shadow .6s}
-  #agilive.upg .term{box-shadow:0 0 70px rgba(255,46,136,.16)}
-  .term::after{content:"";position:absolute;inset:0;pointer-events:none;
-    background:repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 1px,transparent 1px 3px)}
-  .term.bo::before{content:"";position:absolute;inset:0;background:#000;z-index:9;animation:bo .95s ease forwards}
-  @keyframes bo{0%{opacity:0}15%{opacity:1}70%{opacity:1}100%{opacity:0}}
-  .t-head{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);
-    background:rgba(21,25,37,.55);font-size:12px;color:var(--dim)}
-  .t-head .dots{display:flex;gap:6px}
-  .t-head .dots i{width:10px;height:10px;border-radius:50%;background:#232a3e}
-  .t-head .ttl{color:var(--mut);font-weight:700;letter-spacing:.6px}
-  .t-mode{margin-left:auto;font-weight:800;font-size:11px;letter-spacing:1px;padding:3px 10px;border-radius:4px;
-    color:var(--cyan);border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.08);transition:.4s}
-  #agilive.upg .t-mode{color:#ff9ec4;border-color:rgba(255,46,136,.45);background:rgba(255,46,136,.1)}
-  .t-body{display:grid;grid-template-columns:212px 1fr;min-height:380px}
-  .t-side{border-right:1px solid var(--line);padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:14px}
-  .t-face{width:128px;height:128px;border-radius:50%;object-fit:cover;object-position:top;
-    border:2px solid rgba(34,211,238,.5);transition:border-color .5s,box-shadow .25s}
-  .t-face.talk{box-shadow:0 0 36px rgba(34,211,238,.45)}
-  #agilive.upg .t-face{border-color:rgba(255,46,136,.6)}
-  #agilive.upg .t-face.talk{box-shadow:0 0 36px rgba(255,46,136,.5)}
-  .viz{display:flex;align-items:flex-end;gap:3px;height:34px}
-  .viz i{width:5px;height:3px;background:var(--cyan);border-radius:2px;opacity:.85;transition:background .4s}
-  #agilive.upg .viz i{background:var(--pink)}
-  .t-stats{width:100%;font-size:11px;color:var(--dim);line-height:1.9;border-top:1px dashed var(--line);padding-top:10px}
-  .t-stats b{color:var(--mut);float:right;font-weight:600}
-  .t-log{padding:16px 18px;font-size:13px;line-height:1.75;overflow-y:auto;max-height:430px}
-  .t-log .ln{margin:2px 0;word-break:break-word}
-  .t-log .ln-sys{color:var(--dim)}
-  .t-log .ln-pd{color:var(--txt)}
-  .t-log .ln-pd .pfx{color:var(--pink);font-weight:800}
-  .t-log .ln-pd .pfx.ev{color:var(--med)}
-  .t-log .ln-agi{color:#7ee7ff}
-  .t-log .ln-agi .pfx{font-weight:800}
-  .t-log .ln-agi.u{color:#ff9ec4}
-  .t-log .ln-fx{color:#ffcf80}
-  .t-log .ln-up{color:#e39bff;font-weight:700}
-  .t-log .cur::after{content:"▊";animation:blink 1s steps(1) infinite;opacity:.8}
-  @keyframes blink{50%{opacity:0}}
-  .t-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--line);
-    background:rgba(21,25,37,.45);font-size:12px}
-  .t-next{color:var(--mut);flex:1 1 240px;min-width:200px;line-height:1.5}
-  .t-next b{color:var(--txt)}
-  .t-next .nid{color:var(--cyan);font-weight:800}
-  #agilive.upg .t-next .nid{color:#ff9ec4}
-  #sceneSel{background:var(--panel);border:1px solid var(--line2);color:var(--mut);border-radius:6px;
-    padding:8px 10px;font-family:inherit;font-size:12px;max-width:250px}
-  .btn-fire{font-family:inherit;background:transparent;border:1px solid var(--cyan);color:var(--cyan);
-    padding:9px 18px;border-radius:6px;font-weight:800;letter-spacing:1px;cursor:pointer;font-size:12px;transition:.15s}
-  .btn-fire:hover{background:rgba(34,211,238,.12)}
-  #agilive.upg .btn-fire{border-color:var(--pink);color:#ff9ec4}
-  #agilive.upg .btn-fire:hover{background:rgba(255,46,136,.1)}
-  .btn-fire.ghost{border-color:var(--line2);color:var(--dim);font-weight:600}
-  .btn-fire.ghost:hover{color:var(--mut);background:transparent}
-  .rail{margin-top:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);max-height:300px;overflow:auto;
-    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-  .rail .r{display:flex;gap:10px;padding:8px 14px;font-size:12px;border-bottom:1px solid var(--line);cursor:pointer;border-left:3px solid transparent}
-  .rail .r:last-child{border-bottom:0}
-  .rail .r:hover{background:rgba(34,211,238,.05)}
-  .rail .r.done{opacity:.35}
-  .rail .r.cur{background:rgba(34,211,238,.08);border-left-color:var(--cyan)}
-  #agilive.upg .rail .r.cur{border-left-color:var(--pink);background:rgba(255,46,136,.07)}
-  .rail .rid{color:var(--cyan);font-weight:700;width:60px;flex:0 0 auto}
-  .rail .rtyp{color:var(--dim);width:58px;flex:0 0 auto}
-  .rail .rtrig{color:var(--mut);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ============ AUDIO TAB ============ */
+.aud-grid{display:grid;gap:0;border:1px solid var(--red-line)}
+.aud{display:grid;grid-template-columns:70px 1fr;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--red-faint)}
+.aud:last-child{border-bottom:0}
+.aud[data-preset="UPG"]{border-left:3px solid var(--red)}
+.aud .cueid{font-weight:700;font-size:12.5px}
+.aud .cueid small{display:block;font-size:9px;opacity:.6;margin-top:2px}
+.aud .line{font-size:13px;margin-bottom:6px}
+.aud audio{width:100%;height:32px;display:block;filter:invert(1) hue-rotate(180deg) saturate(3)}
+.aud .pending{font-size:11.5px;opacity:.7}
+.hint{border:1px dashed var(--red-line);padding:10px 14px;font-size:12px;opacity:.85;margin:0 0 16px}
 
-  @media(max-width:640px){
-    .head{gap:12px}.badge-studio{margin-left:0;width:100%;text-align:left}
-    h1{font-size:19px}
-    .aud{grid-template-columns:1fr}
-    .t-body{grid-template-columns:1fr}
-    .t-side{flex-direction:row;flex-wrap:wrap;justify-content:center;border-right:0;border-bottom:1px solid var(--line)}
-    .t-face{width:88px;height:88px}
-    .t-stats{border-top:0;width:auto;min-width:150px}
-    .t-log{max-height:320px}
-  }
+/* ============ AGI://LIVE TERMINAL ============ */
+.term{border:1px solid var(--red);position:relative;overflow:hidden}
+.term.bo::before{content:"";position:absolute;inset:0;background:#000;z-index:9;animation:bo .95s ease forwards}
+@keyframes bo{0%{opacity:0}15%{opacity:1}70%{opacity:1}100%{opacity:0}}
+.t-head{display:flex;align-items:center;gap:14px;padding:9px 14px;border-bottom:1px solid var(--red-line);font-size:11.5px}
+.t-head .ttl{font-weight:700}
+.t-mode{margin-left:auto;font-weight:700;font-size:11px;padding:2px 8px;border:1px solid var(--red)}
+.t-body{display:grid;grid-template-columns:230px 1fr;min-height:380px}
+.t-side{border-right:1px solid var(--red-line);padding:16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.t-facewrap{position:relative;width:170px;height:170px;border:1px solid var(--red);overflow:hidden}
+.t-face,.t-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.t-vid{display:none;z-index:2;background:#000}
+.t-facewrap.talk{box-shadow:0 0 24px rgba(255,0,0,.5)}
+.viz{display:flex;align-items:flex-end;gap:3px;height:30px}
+.viz i{width:5px;height:3px;background:var(--red)}
+.t-stats{width:100%;font-size:11px;opacity:.85;line-height:1.9;border-top:1px dashed var(--red-faint);padding-top:10px}
+.t-stats b{float:right;font-weight:600}
+.t-log{padding:14px 16px;font-size:13px;line-height:1.7;overflow-y:auto;max-height:430px}
+.t-log .ln{margin:2px 0;word-break:break-word}
+.t-log .ln-sys{opacity:.6}
+.t-log .ln-pd .pfx{font-weight:700}
+.t-log .ln-agi{font-weight:400}
+.t-log .ln-agi .pfx{font-weight:700}
+.t-log .ln-fx{opacity:.8;font-style:italic}
+.t-log .ln-up{font-weight:700;text-decoration:underline}
+.t-log .cur::after{content:"▊";animation:blink 1s steps(1) infinite}
+.t-foot{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:11px 14px;border-top:1px solid var(--red-line);font-size:12px}
+.t-next{flex:1 1 260px;min-width:220px;line-height:1.5}
+.t-next b{font-weight:700}
+select{
+  background:var(--blk);border:1px solid var(--red-line);color:var(--red);
+  font-family:var(--mono);font-size:11.5px;padding:7px 8px;max-width:260px;
+  text-transform:lowercase;
+}
+.btn{
+  background:transparent;border:0;color:var(--red);cursor:pointer;
+  font-family:var(--mono);font-size:13px;font-weight:700;padding:8px 10px;text-shadow:var(--crt);
+  text-transform:lowercase;letter-spacing:-.03em;
+}
+.btn:hover{background:var(--red);color:var(--blk);text-shadow:var(--crt-blk)}
+.rail{margin-top:18px;border:1px solid var(--red-line);max-height:300px;overflow:auto}
+.rail .r{display:flex;gap:10px;padding:7px 12px;font-size:12px;border-bottom:1px solid var(--red-faint);cursor:pointer;border-left:3px solid transparent}
+.rail .r:last-child{border-bottom:0}
+.rail .r:hover{background:var(--red);color:var(--blk);text-shadow:var(--crt-blk)}
+.rail .r.done{opacity:.35}
+.rail .r.cur{border-left-color:var(--red);font-weight:700}
+.rail .rid{font-weight:700;width:52px;flex:0 0 auto}
+.rail .rtyp{opacity:.6;width:58px;flex:0 0 auto}
+.rail .rtrig{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ============ CRAZY MODE (upgrade) ============ */
+body.crazy{background:var(--red);color:var(--blk);text-shadow:var(--crt-blk)}
+body.crazy::after{background:repeating-linear-gradient(0deg,rgba(0,0,0,.13) 0 1px,transparent 1px 3px)}
+body.crazy header{background:rgba(255,0,0,.94);border-color:rgba(0,0,0,.4)}
+body.crazy a, body.crazy .tab, body.crazy .chip, body.crazy .btn{color:var(--blk);text-shadow:var(--crt-blk)}
+body.crazy .tab.active, body.crazy .tab:hover, body.crazy .chip.on, body.crazy .chip:hover,
+body.crazy .btn:hover, body.crazy a:hover{background:var(--blk);color:var(--red);text-shadow:var(--crt)}
+body.crazy .term, body.crazy .t-mode, body.crazy .t-facewrap{border-color:var(--blk)}
+body.crazy .t-head, body.crazy .t-side, body.crazy .t-foot, body.crazy .rail,
+body.crazy .rail .r, body.crazy .tablewrap, body.crazy th, body.crazy td,
+body.crazy .stats, body.crazy .stat, body.crazy .card, body.crazy details.seq,
+body.crazy .grid, body.crazy .aud-grid, body.crazy .aud, body.crazy .board,
+body.crazy .col, body.crazy .ph, body.crazy .ticket, body.crazy figure.sheet,
+body.crazy figure.sheet figcaption, body.crazy .hint{border-color:rgba(0,0,0,.4)}
+body.crazy th{background:var(--red)}
+body.crazy tbody tr:hover{background:var(--blk)}
+body.crazy tbody tr:hover td, body.crazy tbody tr:hover td *{color:var(--red)!important;text-shadow:var(--crt)}
+body.crazy .rail .r:hover{background:var(--blk);color:var(--red);text-shadow:var(--crt)}
+body.crazy .rail .r.cur{border-left-color:var(--blk)}
+body.crazy select{background:var(--red);color:var(--blk);border-color:rgba(0,0,0,.4)}
+body.crazy input[type=search]{color:var(--blk);border-color:rgba(0,0,0,.4)}
+body.crazy .viz i{background:var(--blk)}
+body.crazy .ticket{border-left-color:var(--blk)}
+body.crazy .aud[data-preset="UPG"]{border-left-color:var(--blk)}
+body.crazy .ph div.active{background:var(--blk);color:var(--red);text-shadow:var(--crt)}
+body.crazy details.seq[open]>summary{background:var(--blk);color:var(--red);text-shadow:var(--crt)}
+
+footer{border-top:1px solid var(--red-line);font-size:11.5px;opacity:.75;padding:18px 0 44px;display:flex;gap:18px;flex-wrap:wrap}
+footer .r{margin-left:auto}
+
+@media(max-width:720px){
+  .t-body{grid-template-columns:1fr}
+  .t-side{flex-direction:row;flex-wrap:wrap;justify-content:center;border-right:0;border-bottom:1px solid var(--red-line)}
+  .t-facewrap{width:120px;height:120px}
+  .t-stats{border-top:0;width:auto;min-width:150px}
+  .t-log{max-height:300px}
+  .clocks{margin-left:0}
+}
 </style>
 </head>
 <body>
-<header>
-  <div class="wrap head">
-    <div class="logo">NI</div>
-    <div>
-      <h1>NARCISSISTIC INSANITY <span class="thin">· VFX Production Hub</span></h1>
-      <div class="sub">Feature · Script v2.8 (95 pp.) · Based on "The 25th Demon" by JParker</div>
-    </div>
-    <div class="badge-studio">
-      <b>Levl Studio</b><br>VFX &amp; Virtual Production
-    </div>
-  </div>
-</header>
 
-<nav class="tabs">
-  <div class="wrap tabrow" id="tabrow">
-    <button class="tab active" data-tab="tracker">VFX Shot Tracker<span class="dot"></span></button>
-    <button class="tab" data-tab="breakdown">Scene Breakdown<span class="dot"></span></button>
-    <button class="tab" data-tab="agi">AGI Character &amp; Assets<span class="dot"></span></button>
-    <button class="tab" data-tab="pipeline">Previs &amp; Pipeline<span class="dot"></span></button>
-    <button class="tab" data-tab="audio">Audio <span style="opacity:.55">· 39</span><span class="dot"></span></button>
-    <button class="tab live" data-tab="agilive">AGI://LIVE<span class="dot"></span></button>
+<div id="loader"><div class="box">
+  <div class="ln" id="ld1"></div>
+  <div class="ln" id="ld2"></div>
+  <div class="ln" id="ld3"></div>
+  <div class="pct" id="ldp">0%</div>
+</div></div>
+
+<header>
+  <div class="wrap head-top">
+    <span class="brand">project<em>://insanity</em></span>
+    <span style="opacity:.6">.levl studio</span>
+    <div class="clocks">
+      <span>atlanta: <b id="clkAtl">--:--</b></span>
+      <span>script: <b>v2.8 · 95pp</b></span>
+      <span>sound: <b>[on]</b></span>
+    </div>
   </div>
-</nav>
+  <nav class="wrap head-nav" id="tabrow">
+    <button class="tab active" data-tab="tracker">.tracker</button>
+    <button class="tab" data-tab="breakdown">.breakdown</button>
+    <button class="tab" data-tab="agi">.agi</button>
+    <button class="tab" data-tab="pipeline">.pipeline</button>
+    <button class="tab" data-tab="audio">.audio [39]</button>
+    <button class="tab" data-tab="agilive">://live</button>
+  </nav>
+</header>
 
 <main class="wrap">
 
-  <!-- ================= TAB 1: SHOT TRACKER ================= -->
+  <!-- ============ TRACKER ============ -->
   <section class="panel active" id="tracker">
-    <h2>VFX Shot Tracker</h2>
-    <p class="lead">Initial VFX breakdown seeded from the shooting script. Shots are ranked by complexity so the hero/showcase work can be bid, previs'd, and budgeted first. Use the search and filters to slice by effect type or tier.</p>
+    <h2>vfx shot tracker</h2>
+    <p class="lead">initial vfx breakdown seeded from the shooting script. shots ranked by complexity so hero work gets bid, previs'd and budgeted first. slice by effect type or tier.</p>
     <div class="stats" id="stats"></div>
     <div class="controls">
-      <input type="search" id="q" placeholder="Search shots, scenes, effects…" />
+      <input type="search" id="q" placeholder="search shots, scenes, effects…" />
       <div class="chips" id="tierChips">
-        <span class="chip on" data-f="tier" data-v="all">All tiers</span>
-        <span class="chip" data-f="tier" data-v="Hero">Hero</span>
-        <span class="chip" data-f="tier" data-v="High">High</span>
-        <span class="chip" data-f="tier" data-v="Medium">Medium</span>
-        <span class="chip" data-f="tier" data-v="Low">Low</span>
+        <button class="chip on" data-f="tier" data-v="all">all tiers</button>
+        <button class="chip" data-f="tier" data-v="Hero">hero</button>
+        <button class="chip" data-f="tier" data-v="High">high</button>
+        <button class="chip" data-f="tier" data-v="Medium">medium</button>
+        <button class="chip" data-f="tier" data-v="Low">low</button>
       </div>
       <div class="chips" id="typeChips"></div>
     </div>
     <div class="tablewrap">
       <table>
         <thead>
-          <tr><th>ID</th><th>Shot / Sequence</th><th>Effect Type</th><th>Tier</th><th>Dept</th><th>Status</th></tr>
+          <tr><th>id</th><th>shot / sequence</th><th>effect type</th><th>tier</th><th>dept</th><th>status</th></tr>
         </thead>
         <tbody id="rows"></tbody>
       </table>
     </div>
-    <p class="note" id="count" style="margin-top:10px"></p>
-    <p class="note">Status reflects a fresh breakdown — everything starts at <b>To Bid</b>. Update the <code>SHOTS</code> array in <code>index.html</code> (or wire to your tracker) as work moves through the pipeline.</p>
+    <p class="note" id="count"></p>
+    <p class="note">status reflects a fresh breakdown — everything starts at [to bid]. update the SHOTS array in index.html as work moves through the pipeline.</p>
   </section>
 
-  <!-- ================= TAB 2: SCENE BREAKDOWN ================= -->
+  <!-- ============ BREAKDOWN ============ -->
   <section class="panel" id="breakdown">
-    <h2>Scene Breakdown — VFX Requirements</h2>
-    <p class="lead">Where the visual-effects load sits across the script, grouped by the show's recurring FX systems. Expand a system to see the beats that feed it.</p>
+    <h2>scene breakdown</h2>
+    <p class="lead">where the visual-effects load sits across the script, grouped by the show's recurring fx systems. expand a system to see the beats that feed it.</p>
     <div id="seqs"></div>
   </section>
 
-  <!-- ================= TAB 3: AGI CHARACTER & ASSETS ================= -->
+  <!-- ============ AGI ============ -->
   <section class="panel" id="agi">
-    <h2>AGI — Character &amp; Assets</h2>
-    <p class="lead">AGI is PD's ever-present AI companion — a smiling face living across his Apple Watch, phone, and monitors, voice-over only. She is the single most recurring visual-effects and audio asset in the film, and her tone shifts after PD's mid-film "upgrade."</p>
+    <h2>agi — character &amp; assets</h2>
+    <p class="lead">agi is pd's ever-present ai companion — a face living across his watch, phone and monitors, voice-over only. the single most recurring vfx + audio asset in the film. her tone shifts after pd's mid-film "upgrade."</p>
 
     <figure class="sheet">
-      <img src="assets/agi-character-sheet.png" alt="AGI character reference sheet — African American woman with sleek center-part glass bob, front and profile views with expression studies, magenta/cyan neon HUD styling" loading="lazy" />
+      <img src="assets/agi-character-sheet.png" alt="agi character reference sheet — standard state" loading="lazy" />
       <figcaption>
-        <b>AGI — Character Reference Sheet (Standard state)</b> · generated with Higgsfield Soul 2.0
-        <span class="sp"><a href="assets/agi-character-sheet.png" target="_blank">Full-res ↗</a> &nbsp;·&nbsp; <a href="assets/agi-character-sheet-v1.png" target="_blank">Previous design (v1) ↗</a></span>
+        <b>agi — reference sheet (standard state)</b> · higgsfield soul 2.0
+        <span class="sp"><a href="assets/agi-character-sheet.png" target="_blank">[full-res]</a> <a href="assets/agi-character-sheet-v2.png" target="_blank">[v2 design]</a> <a href="assets/agi-character-sheet-v1.png" target="_blank">[v1 design]</a></span>
       </figcaption>
     </figure>
 
     <figure class="sheet">
-      <img src="assets/agi-character-sheet-upgraded.png" alt="AGI upgraded-state reference sheet — same character with smoky teal eye makeup, sultrier styling, saturated magenta and cyan neon" loading="lazy" />
+      <img src="assets/agi-character-sheet-upgraded.png" alt="agi upgraded-state reference sheet" loading="lazy" />
       <figcaption>
-        <b>AGI — Upgraded state (post p.51)</b> · sultrier, subtly dangerous · Higgsfield Soul 2.0
-        <span class="sp"><a href="assets/agi-character-sheet-upgraded.png" target="_blank">Full-res ↗</a></span>
+        <b>agi — upgraded state (post p.51)</b> · sultrier, subtly dangerous
+        <span class="sp"><a href="assets/agi-character-sheet-upgraded.png" target="_blank">[full-res]</a></span>
       </figcaption>
     </figure>
 
-    <div class="grid two" style="margin-bottom:16px">
+    <div class="grid two" style="margin-bottom:20px">
       <div class="card">
-        <h3>🗣️ Voice <span class="tag">DELIVERED</span></h3>
-        <p>Custom ElevenLabs voice <b>"AGI - Narcissistic Insanity"</b> designed and saved to the ElevenCreative workspace. All 39 spoken lines rendered.</p>
-        <div class="kv"><span>Standard voice (cues 01–24)</span><b>Stability 0.50</b></div>
-        <div class="kv"><span>Upgraded / sultry (cues 25–39)</span><b>Stability 0.34</b></div>
-        <div class="kv"><span>Model</span><b>Eleven Multilingual v2</b></div>
-        <div class="kv"><span>Spoken lines</span><b>39</b></div>
+        <h3>voice — [delivered]</h3>
+        <p>custom elevenlabs voice "agi — narcissistic insanity". all 39 spoken lines rendered.</p>
+        <div class="kv"><span>standard voice (cues 01–24)</span><b>stability 0.50</b></div>
+        <div class="kv"><span>upgraded / sultry (cues 25–39)</span><b>stability 0.34</b></div>
+        <div class="kv"><span>model</span><b>eleven multilingual v2</b></div>
+        <div class="kv"><span>spoken lines</span><b>39</b></div>
       </div>
       <div class="card">
-        <h3>🎭 Character Image <span class="tag">DELIVERED</span></h3>
-        <p>Character design generated with <b>Higgsfield Soul 2.0</b> (see sheets above). AGI is an African American woman; on-screen she reads as a face/interface across devices — no body.</p>
+        <h3>character image — [delivered]</h3>
+        <p>design generated with higgsfield soul 2.0 (sheets above). on-screen she reads as a face/interface across devices — no body.</p>
         <ul>
-          <li>Front &amp; profile turnaround + expression studies, both states</li>
-          <li>Two visual states: <b>calm</b> → <b>upgraded/seductive</b> (post p.51)</li>
-          <li>Deep-brown radiant skin, sleek center-part glass bob, amber eyes, magenta/cyan neon HUD framing</li>
-          <li>Upgraded state: smoky teal eye makeup, hot-pink palette — glitch/corrupted variant still to come for the "dying AGI" beats</li>
+          <li>front &amp; profile turnaround + expression studies, both states</li>
+          <li>two visual states: calm → upgraded/seductive (post p.51)</li>
+          <li>dark center-part glass bob, amber eyes, neon hud framing</li>
+          <li>lip-synced cue videos: in production (wan 2.7)</li>
         </ul>
       </div>
     </div>
 
-    <div class="grid three" style="margin-bottom:16px">
-      <div class="stat"><div class="n" style="color:var(--low)">39</div><div class="l">Audio cues rendered</div></div>
-      <div class="stat"><div class="n" style="color:var(--accent)">24 / 15</div><div class="l">Standard / Upgraded</div></div>
-      <div class="stat"><div class="n" style="color:var(--med)">5</div><div class="l">Action-only triggers</div></div>
+    <div class="stats">
+      <div class="stat"><div class="n">39</div><div class="l">audio cues rendered</div></div>
+      <div class="stat"><div class="n">24/15</div><div class="l">standard / upgraded</div></div>
+      <div class="stat"><div class="n">5</div><div class="l">action-only triggers</div></div>
     </div>
 
-    <div class="card" style="margin-bottom:16px">
-      <h3>🔗 Assets in this repo</h3>
+    <div class="card" style="border:1px solid var(--red-line);margin-bottom:16px">
+      <h3>assets in this repo</h3>
       <ul>
-        <li><a href="assets/AGI_Cue_Sheet.md">AGI_Cue_Sheet.md</a> — human-readable cue sheet (trigger line → AGI response)</li>
-        <li><a href="assets/agi_cues.json">agi_cues.json</a> — structured cue data for the trigger app</li>
+        <li><a href="assets/AGI_Cue_Sheet.md">[agi_cue_sheet.md]</a> — human-readable cue sheet</li>
+        <li><a href="assets/agi_cues.json">[agi_cues.json]</a> — structured cue data for the trigger app</li>
       </ul>
-      <p class="note">Audio files live in the ElevenLabs account History under the AGI voice; drop the exported MP3s into <code>/assets/audio/</code> and this tab can preview them.</p>
     </div>
 
-    <h3 style="margin:22px 0 10px;font-size:15px">All 39 AGI audio cues</h3>
-    <div class="audio-list" id="cuelist"></div>
-    <p class="note" style="margin-top:8px">The 3 "PD AI BOT" lines are the actor's cloned avatar voice — tracked separately, not part of the AGI voice set.</p>
+    <h3 class="sec">all 39 agi audio cues</h3>
+    <div class="rail" id="cuelist" style="margin-top:0"></div>
+    <p class="note">the 3 "pd ai bot" lines are the actor's cloned avatar voice — tracked separately, not part of the agi voice set.</p>
   </section>
 
-  <!-- ================= TAB 4: PREVIS & PIPELINE ================= -->
+  <!-- ============ PIPELINE ============ -->
   <section class="panel" id="pipeline">
-    <h2>Previs &amp; Pipeline</h2>
-    <p class="lead">Production status across the VFX pipeline, plus the previs priority list — the shots that most need to be designed before the camera rolls.</p>
+    <h2>previs &amp; pipeline</h2>
+    <p class="lead">production status across the vfx pipeline, plus the previs priority list — the shots that most need design before camera rolls.</p>
 
     <div class="ph">
-      <div class="active">Bid / Breakdown</div>
-      <div>Previs</div>
-      <div>Layout</div>
-      <div>Anim / FX</div>
-      <div>Comp</div>
-      <div>Final / QC</div>
+      <div class="active">bid / breakdown</div>
+      <div>previs</div>
+      <div>layout</div>
+      <div>anim / fx</div>
+      <div>comp</div>
+      <div>final / qc</div>
     </div>
 
-    <h3 style="margin:6px 0 10px;font-size:15px">Previs priority — design these first</h3>
-    <div class="grid two" style="margin-bottom:24px">
+    <h3 class="sec">previs priority — design these first</h3>
+    <div class="grid two" style="margin-bottom:26px">
       <div class="card">
-        <h3>🐊 Alligator feeding · <span class="pill hero">Hero</span></h3>
-        <p>CG creatures at the river's edge (and the baby-gator flashback). Needs creature design, water interaction, and a night-lighting lookdev pass. Recurs 3× — build once, reuse.</p>
+        <h3>alligator feeding · [hero]</h3>
+        <p>cg creatures at the river's edge (and the baby-gator flashback). creature design, water interaction, night lookdev. recurs 3× — build once, reuse.</p>
       </div>
       <div class="card">
-        <h3>🪞 Mirror-self emergence (finale) · <span class="pill hero">Hero</span></h3>
-        <p>The reflection contorts, jaw unhinges, and steps <i>through</i> the glass. Hero transformation — previs the mechanic, plan practical mirror rig + digi-double + face FX.</p>
+        <h3>mirror-self emergence (finale) · [hero]</h3>
+        <p>the reflection contorts, jaw unhinges, and steps through the glass. previs the mechanic, plan practical mirror rig + digi-double + face fx.</p>
       </div>
       <div class="card">
-        <h3>🧑‍💻 AI-PD avatar takeover · <span class="pill hero">Hero</span></h3>
-        <p>PD's FaceTime image seamlessly becomes his AI clone. Face-replacement/deepfake methodology and plate strategy decided in previs. Recurs on the live-feed dick-show beat.</p>
+        <h3>ai-pd avatar takeover · [hero]</h3>
+        <p>pd's facetime image seamlessly becomes his ai clone. face-replacement methodology and plate strategy decided in previs. recurs on the live-feed beat.</p>
       </div>
       <div class="card">
-        <h3>🎞️ AI-splice reveal (cyber unit) · <span class="pill hero">Hero</span></h3>
-        <p>Detectives spot real footage morphing into AI-generated (the lamp warps). A VFX-within-VFX gag — the "tell" must be designed deliberately.</p>
+        <h3>ai-splice reveal (cyber unit) · [hero]</h3>
+        <p>detectives spot real footage morphing into ai-generated (the lamp warps). a vfx-within-vfx gag — the "tell" must be designed deliberately.</p>
       </div>
     </div>
 
-    <h3 style="margin:6px 0 10px;font-size:15px">Live status board</h3>
+    <h3 class="sec">live status board</h3>
     <div class="board" id="board"></div>
-    <p class="note" style="margin-top:14px">Board seeded from the shot tracker. As shots advance, move them across columns (edit <code>index.html</code>) or connect this view to ftrack / Shotgun / a Google Sheet.</p>
+    <p class="note">board seeded from the shot tracker. as shots advance, move them across columns or connect to ftrack / shotgun / a sheet.</p>
   </section>
 
-  <!-- ================= TAB 5: AUDIO ================= -->
+  <!-- ============ AUDIO ============ -->
   <section class="panel" id="audio">
-    <h2>AGI Audio Cues</h2>
-    <p class="lead">All 39 of AGI's spoken lines, rendered in the custom ElevenLabs voice. Standard delivery for cues 01–24; the sultrier "upgraded" voice for 25–39. Use these as trigger clips synced to the actor's lines on set / in the interactive app.</p>
+    <h2>agi audio cues</h2>
+    <p class="lead">all 39 of agi's spoken lines in the custom elevenlabs voice. standard delivery for 01–24; the sultrier "upgraded" voice for 25–39. trigger clips for the actor-synced interactive app.</p>
     <div class="stats" id="audioStats"></div>
-    <div class="aud-controls">
+    <div class="controls">
       <div class="chips" id="audChips">
-        <span class="chip on" data-v="all">All 39</span>
-        <span class="chip" data-v="STD">Standard (24)</span>
-        <span class="chip" data-v="UPG">Upgraded (15)</span>
+        <button class="chip on" data-v="all">all 39</button>
+        <button class="chip" data-v="STD">standard (24)</button>
+        <button class="chip" data-v="UPG">upgraded (15)</button>
       </div>
     </div>
     <div class="hint" id="audHint"></div>
     <div class="aud-grid" id="audGrid"></div>
-    <p class="note" style="margin-top:12px">Files load from <code>assets/audio/agi-01.mp3 … agi-39.mp3</code>. Cues showing “audio pending” just need the exported MP3 dropped into that folder — the player lights up automatically on the next push.</p>
+    <p class="note">files load from assets/audio/agi-01.mp3 … agi-39.mp3.</p>
   </section>
 
-  <!-- ================= TAB 6: AGI://LIVE ================= -->
+  <!-- ============ AGI://LIVE ============ -->
   <section class="panel" id="agilive">
-    <h2>AGI://LIVE — Interactive Hub</h2>
-    <p class="lead">Run AGI as a live show-control console. Arm a scene (or run the whole script), then fire cues in order — each trigger plays AGI's rendered ElevenLabs line, types her response into the terminal, and calls out any lighting / music effect for the operator. Press <b>SPACE</b> to fire the next cue during a run-through.</p>
+    <h2>agi://live</h2>
+    <p class="lead">run agi as a live show-control console. arm a scene, then fire cues in order — each trigger plays agi's rendered line (lip-synced video when available), types her response into the terminal, and calls out lighting / music effects for the operator. press [space] to fire.</p>
 
     <div class="term" id="term">
       <div class="t-head">
-        <span class="dots"><i></i><i></i><i></i></span>
-        <span class="ttl">AGI://LIVE · core v2.8 · narcissistic-insanity</span>
-        <span class="t-mode" id="tMode">AGI_STANDARD</span>
+        <span class="ttl">agi://live · core v2.8 · narcissistic-insanity</span>
+        <span class="t-mode" id="tMode">agi_standard</span>
       </div>
       <div class="t-body">
         <div class="t-side">
-          <img class="t-face" id="tFace" src="assets/agi-avatar.png" alt="AGI interface face" />
+          <div class="t-facewrap" id="tFaceWrap">
+            <img class="t-face" id="tFace" src="assets/agi-avatar.png" alt="agi interface face" />
+            <video class="t-vid" id="tVid" playsinline preload="none"></video>
+          </div>
           <div class="viz" id="viz"></div>
           <div class="t-stats" id="tStats"></div>
         </div>
@@ -468,20 +483,22 @@
       </div>
       <div class="t-foot">
         <span class="t-next" id="tNext"></span>
-        <select id="sceneSel" title="Jump to scene"></select>
-        <button class="btn-fire" id="fireBtn">[ FIRE CUE ]</button>
-        <button class="btn-fire ghost" id="resetBtn">[ reset ]</button>
+        <select id="sceneSel" title="jump to scene"></select>
+        <button class="btn" id="fireBtn">[fire cue]</button>
+        <button class="btn" id="resetBtn">[reset]</button>
       </div>
     </div>
 
     <div class="rail" id="rail"></div>
-    <p class="note" style="margin-top:8px">44 cues in script order — 39 voice lines + 5 action-only effects (a1–a5). Click a row to arm that cue; the scene selector jumps to a scene's first cue. Cue data mirrors <a href="assets/agi_cues.json">agi_cues.json</a>.</p>
+    <p class="note">44 cues in script order — 39 voice lines + 5 action-only effects (a1–a5). click a row to arm that cue; the scene selector jumps to a scene's first cue. cue data mirrors <a href="assets/agi_cues.json">[agi_cues.json]</a>.</p>
   </section>
 
 </main>
 
 <footer class="wrap">
-  Narcissistic Insanity · VFX Production Hub — built for Levl Studio · Living document, initial breakdown from Script v2.8
+  <span>narcissistic insanity · vfx production hub</span>
+  <span>levl studio — vfx &amp; virtual production</span>
+  <span class="r">living document · breakdown from script v2.8 · ©2026</span>
 </footer>
 
 <script>
@@ -529,7 +546,6 @@ const SHOTS = [
   {id:40, d:"Dempsey Sr. one-shot head kill on the sidewalk", s:"Industrial Road · p.89", t:"Blood / Practical", tier:"Low"},
 ];
 
-/* AGI audio cues */
 const CUES = [
   ["01","Yes, PD.","STD"],["02","Good morning, PD.","STD"],["03","Your usual…","STD"],
   ["04","Gross sales: $38,700 in the last 24 hours. However…","STD"],
@@ -560,65 +576,56 @@ const CUES = [
   ["38","Do you want me to call Dr. Sullivan?","UPG"],["39","Sorry—","UPG"],
 ];
 
-/* Scene-breakdown systems */
 const SEQS = [
-  {name:"AGI screens & interface graphics", count:"12+ shots", items:[
-    "<b>Recurring device face</b> — AGI's smiling face on watch, phone, monitors; two states (calm → upgraded).",
-    "<b>Dashboards</b> — OnlySex metrics, sales, social clips on the command-center wall.",
-    "<b>Live-stream UI</b> — viewer counters, chat overlays, tip notifications.",
-    "<b>Data overlays</b> — banking profiles, encrypted downloads, FORGE logo, red \"CARD DEACTIVATED\".",
+  {name:"agi screens & interface graphics", count:"12+ shots", items:[
+    "<b>recurring device face</b> — agi's face on watch, phone, monitors; two states (calm → upgraded).",
+    "<b>dashboards</b> — onlysex metrics, sales, social clips on the command-center wall.",
+    "<b>live-stream ui</b> — viewer counters, chat overlays, tip notifications.",
+    "<b>data overlays</b> — banking profiles, encrypted downloads, forge logo, red \"card deactivated\".",
   ]},
-  {name:"Deepfake / AI-avatar (face replacement)", count:"3 hero shots", items:[
-    "<b>AI-PD FaceTime takeover</b> (Monica call) — image becomes the AI clone mid-conversation.",
-    "<b>AI-PD live-feed bot</b> continues the show after PD steps away.",
-    "<b>Cyber-unit reveal</b> — real security footage morphs to AI-generated; the lamp warp is the tell.",
+  {name:"deepfake / ai-avatar (face replacement)", count:"3 hero shots", items:[
+    "<b>ai-pd facetime takeover</b> (monica call) — image becomes the ai clone mid-conversation.",
+    "<b>ai-pd live-feed bot</b> continues the show after pd steps away.",
+    "<b>cyber-unit reveal</b> — real security footage morphs to ai-generated; the lamp warp is the tell.",
   ]},
-  {name:"Mirror / reflection & apparitions", count:"7 shots", items:[
-    "<b>Title mirrors</b> — fragmented, multiplying, lagging reflections.",
-    "<b>Apparitions</b> — Uncle Mason, Colette, young Martin manifest in glass.",
-    "<b>Reflection lag</b> — PD's mirror-self falls out of sync during the live feed.",
-    "<b>Finale</b> — reflection contorts and steps physically through the mirror (hero transformation).",
+  {name:"mirror / reflection & apparitions", count:"7 shots", items:[
+    "<b>title mirrors</b> — fragmented, multiplying, lagging reflections.",
+    "<b>apparitions</b> — uncle mason, colette, young martin manifest in glass.",
+    "<b>reflection lag</b> — pd's mirror-self falls out of sync during the live feed.",
+    "<b>finale</b> — reflection contorts and steps physically through the mirror (hero transformation).",
   ]},
-  {name:"CG creatures — alligators", count:"3 shots", items:[
-    "<b>River feeding</b> — two adult gators consume the wrapped bodies (night, water interaction).",
-    "<b>Baby gators</b> — young PD plays with them in the 20-years-ago flashback.",
-    "<b>Flash cut</b> — a gator's mouth raging out of the water (car-drive intercut).",
+  {name:"cg creatures — alligators", count:"3 shots", items:[
+    "<b>river feeding</b> — two adult gators consume the wrapped bodies (night, water interaction).",
+    "<b>baby gators</b> — young pd plays with them in the 20-years-ago flashback.",
+    "<b>flash cut</b> — a gator's mouth raging out of the water (car-drive intercut).",
   ]},
-  {name:"Gore, squibs & practical-plus", count:"8 shots", items:[
-    "<b>Wire kills</b> — strangulation cord (hotel, montage) with neck prosthetics.",
-    "<b>Monica</b> — 20-story fall rig, scaffold entanglement, head detachment.",
-    "<b>Back-room gunfight</b> — chest squibs, headshot + brain matter on Vicker.",
-    "<b>Assorted</b> — Harold, Kara's knife, PD's legs, Dempsey Sr. head shot.",
+  {name:"gore, squibs & practical-plus", count:"8 shots", items:[
+    "<b>wire kills</b> — strangulation cord (hotel, montage) with neck prosthetics.",
+    "<b>monica</b> — 20-story fall rig, scaffold entanglement, head detachment.",
+    "<b>back-room gunfight</b> — chest squibs, headshot + brain matter on vicker.",
+    "<b>assorted</b> — harold, kara's knife, pd's legs, dempsey sr. head shot.",
   ]},
-  {name:"Environment & hack FX", count:"3 shots", items:[
-    "<b>Blackouts</b> — AGI kills street lights / building power on command; lights restore as PD leaves.",
-    "<b>EMP-adjacent disruptor</b> — cameras die for exactly 60 seconds.",
-    "<b>Fire</b> — burning evidence, dance-by-flame beats.",
+  {name:"environment & hack fx", count:"3 shots", items:[
+    "<b>blackouts</b> — agi kills street lights / building power on command; lights restore as pd leaves.",
+    "<b>emp-adjacent disruptor</b> — cameras die for exactly 60 seconds.",
+    "<b>fire</b> — burning evidence, dance-by-flame beats.",
   ]},
 ];
 
 /* ---------- RENDER ---------- */
-const tierClass = t => ({Hero:"hero",High:"high",Medium:"med",Low:"low"}[t]||"low");
-
 function renderStats(){
   const by = t => SHOTS.filter(s=>s.tier===t).length;
-  const el = document.getElementById('stats');
-  el.innerHTML = [
-    ['Total shots', SHOTS.length, ''],
-    ['Hero', by('Hero'), 'hero'],
-    ['High', by('High'), 'high'],
-    ['Medium', by('Medium'), 'med'],
-    ['Low', by('Low'), 'low'],
-  ].map(([l,n,c])=>`<div class="stat ${c}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+  document.getElementById('stats').innerHTML = [
+    ['total shots', SHOTS.length],['hero', by('Hero')],['high', by('High')],
+    ['medium', by('Medium')],['low', by('Low')],
+  ].map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
 }
-
 function renderTypeChips(){
   const types = [...new Set(SHOTS.map(s=>s.t))].sort();
-  const el = document.getElementById('typeChips');
-  el.innerHTML = `<span class="chip on" data-f="type" data-v="all">All types</span>` +
-    types.map(t=>`<span class="chip" data-f="type" data-v="${t}">${t}</span>`).join('');
+  document.getElementById('typeChips').innerHTML =
+    `<button class="chip on" data-f="type" data-v="all">all types</button>` +
+    types.map(t=>`<button class="chip" data-f="type" data-v="${t}">${t.toLowerCase()}</button>`).join('');
 }
-
 let F = {tier:'all', type:'all', q:''};
 function renderRows(){
   const q = F.q.toLowerCase();
@@ -631,32 +638,30 @@ function renderRows(){
     <tr>
       <td class="id">${String(s.id).padStart(2,'0')}</td>
       <td class="desc"><b>${s.d}</b><span class="scene">${s.s}</span></td>
-      <td><span class="type">${s.t}</span></td>
-      <td><span class="pill ${tierClass(s.tier)}">${s.tier}</span></td>
-      <td style="color:var(--mut)">${dept(s.t)}</td>
-      <td><span class="status bid">To Bid</span></td>
-    </tr>`).join('') || `<tr><td colspan="6" style="color:var(--dim);padding:24px;text-align:center">No shots match.</td></tr>`;
-  document.getElementById('count').textContent = `Showing ${list.length} of ${SHOTS.length} shots`;
+      <td>${s.t.toLowerCase()}</td>
+      <td><span class="mark">${s.tier.toLowerCase()}</span></td>
+      <td style="opacity:.75">${dept(s.t)}</td>
+      <td>[to bid]</td>
+    </tr>`).join('') || `<tr><td colspan="6" style="opacity:.5;padding:24px;text-align:center">no shots match.</td></tr>`;
+  document.getElementById('count').textContent = `showing ${list.length} of ${SHOTS.length} shots`;
 }
 function dept(t){
-  if(/Creature/.test(t)) return 'CG / Creature';
-  if(/Face Replace|Deepfake/.test(t)) return 'AI / Comp';
-  if(/Screen|UI|Hologram|Motion/.test(t)) return 'Motion GFX';
-  if(/Apparition|Reflection|Comp|Transformation|Montage/.test(t)) return 'Compositing';
-  if(/Gore|Blood|Squib|Prosthetic/.test(t)) return 'SFX / Comp';
-  if(/Fire|Environment/.test(t)) return 'FX / Env';
-  return 'Comp';
+  if(/Creature/.test(t)) return 'cg / creature';
+  if(/Face Replace|Deepfake/.test(t)) return 'ai / comp';
+  if(/Screen|UI|Hologram|Motion/.test(t)) return 'motion gfx';
+  if(/Apparition|Reflection|Comp|Transformation|Montage/.test(t)) return 'compositing';
+  if(/Gore|Blood|Squib|Prosthetic/.test(t)) return 'sfx / comp';
+  if(/Fire|Environment/.test(t)) return 'fx / env';
+  return 'comp';
 }
-
 function renderCues(){
   document.getElementById('cuelist').innerHTML = CUES.map(([n,l,v])=>`
-    <div class="row">
-      <span class="cue">AGI-${n}</span>
-      <span class="line">${l}</span>
-      <span class="vp">${v==='UPG'?'UPGRADED':'standard'}</span>
+    <div class="r">
+      <span class="rid">agi-${n}</span>
+      <span class="rtrig">${l}</span>
+      <span style="flex:0 0 auto;opacity:.6;font-size:10.5px">${v==='UPG'?'[upgraded]':'[standard]'}</span>
     </div>`).join('');
 }
-
 function renderSeqs(){
   document.getElementById('seqs').innerHTML = SEQS.map((s,i)=>`
     <details class="seq" ${i===0?'open':''}>
@@ -664,21 +669,13 @@ function renderSeqs(){
       <div class="body"><ul>${s.items.map(x=>`<li>${x}</li>`).join('')}</ul></div>
     </details>`).join('');
 }
-
 function renderBoard(){
-  const cols = [
-    ['To Bid', SHOTS],
-    ['Previs', []],
-    ['Layout', []],
-    ['Anim / FX', []],
-    ['Comp', []],
-    ['Final / QC', []],
-  ];
+  const cols = [['to bid', SHOTS],['previs', []],['layout', []],['anim / fx', []],['comp', []],['final / qc', []]];
   document.getElementById('board').innerHTML = cols.map(([name,items])=>`
     <div class="col">
       <h4>${name}<span>${items.length}</span></h4>
       ${items.slice(0,6).map(s=>`<div class="ticket">${String(s.id).padStart(2,'0')} · ${s.d.slice(0,42)}${s.d.length>42?'…':''}<small>${s.tier} · ${s.t}</small></div>`).join('')}
-      ${items.length>6?`<div class="ticket" style="border-left-color:var(--dim);color:var(--dim)">+ ${items.length-6} more</div>`:''}
+      ${items.length>6?`<div class="ticket" style="opacity:.5">+ ${items.length-6} more</div>`:''}
     </div>`).join('');
 }
 
@@ -688,18 +685,17 @@ document.getElementById('tabrow').addEventListener('click', e=>{
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===b));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===b.dataset.tab));
   history.replaceState(null,'', '#'+b.dataset.tab);
+  if(b.dataset.tab === 'agilive') bootLive();
 });
 document.querySelectorAll('#tierChips, #typeChips').forEach(g=>{
   g.addEventListener('click', e=>{
     const c = e.target.closest('.chip'); if(!c) return;
-    const f = c.dataset.f;
     c.parentElement.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x===c));
-    F[f] = c.dataset.v; renderRows();
+    F[c.dataset.f] = c.dataset.v; renderRows();
   });
 });
 document.getElementById('q').addEventListener('input', e=>{ F.q = e.target.value; renderRows(); });
 
-/* deep-link to a tab via hash */
 (function initHash(){
   const h = (location.hash||'').replace('#','');
   if(h && document.getElementById(h)){
@@ -714,23 +710,21 @@ let AUDF = 'all';
 function renderAudioStats(){
   const std = CUES.filter(c=>c[2]==='STD').length, upg = CUES.filter(c=>c[2]==='UPG').length;
   document.getElementById('audioStats').innerHTML = [
-    ['Total cues', CUES.length, ''],
-    ['Standard voice', std, 'low'],
-    ['Upgraded voice', upg, 'hero'],
-  ].map(([l,n,c])=>`<div class="stat ${c}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+    ['total cues', CUES.length],['standard voice', std],['upgraded voice', upg],
+  ].map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
   document.getElementById('audHint').textContent =
-    'Row colour = voice preset: cyan bar = standard (01–24), magenta bar = upgraded/sultry (25–39). Players stream from /assets/audio/.';
+    'left border marks the upgraded/sultry preset (25–39). players stream from /assets/audio/.';
 }
 function renderAudio(){
   const list = CUES.filter(c => AUDF==='all' || c[2]===AUDF);
   document.getElementById('audGrid').innerHTML = list.map(([n,l,v])=>`
     <div class="aud" data-preset="${v}">
-      <div class="cueid">AGI-${n}<small>${v==='UPG'?'UPGRADED':'STANDARD'}</small></div>
+      <div class="cueid">agi-${n}<small>${v==='UPG'?'upgraded':'standard'}</small></div>
       <div>
         <div class="line">${esc(l)}</div>
         <audio controls preload="metadata" src="assets/audio/agi-${n}.mp3"
           onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'"></audio>
-        <span class="pending" style="display:none">audio pending — add agi-${n}.mp3</span>
+        <span class="pending" style="display:none">[audio pending — add agi-${n}.mp3]</span>
       </div>
     </div>`).join('');
 }
@@ -743,8 +737,52 @@ document.getElementById('audChips').addEventListener('click', e=>{
 renderStats(); renderTypeChips(); renderRows(); renderCues(); renderSeqs(); renderBoard();
 renderAudioStats(); renderAudio();
 
+/* ---------- CLOCK ---------- */
+function tickClock(){
+  const d = new Date();
+  document.getElementById('clkAtl').textContent =
+    new Intl.DateTimeFormat('en-US',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/New_York'}).format(d);
+}
+tickClock(); setInterval(tickClock, 30000);
+
+/* ---------- LOADER ---------- */
+(function loader(){
+  const el = document.getElementById('loader');
+  if(sessionStorage.getItem('ni_booted')){ el.classList.add('off'); return; }
+  const lines = [
+    ['ld1','project://insanity'],
+    ['ld2','initialisation...'],
+    ['ld3','loading vfx breakdown + agi core'],
+  ];
+  let li = 0;
+  function typeLine(){
+    if(li >= lines.length){ pct(); return; }
+    const [id, text] = lines[li++];
+    const node = document.getElementById(id);
+    node.classList.add('cur');
+    let i = 0;
+    const t = setInterval(()=>{
+      node.textContent += text[i++];
+      if(i >= text.length){ clearInterval(t); node.classList.remove('cur'); setTimeout(typeLine, 120); }
+    }, 24);
+  }
+  function pct(){
+    const p = document.getElementById('ldp');
+    let v = 0;
+    const t = setInterval(()=>{
+      v += Math.ceil(Math.random()*13);
+      if(v >= 100){ v = 100; clearInterval(t);
+        setTimeout(()=>{ el.classList.add('off'); sessionStorage.setItem('ni_booted','1'); }, 320);
+      }
+      p.textContent = v + '%';
+    }, 90);
+  }
+  typeLine();
+  el.addEventListener('click', ()=>{ el.classList.add('off'); sessionStorage.setItem('ni_booted','1'); });
+})();
+
 /* ---------- AGI://LIVE — interactive terminal ---------- */
-/* t: V voice-trigger · E event-trigger · A action-only (no AGI speech) · p: S standard / U upgraded */
+/* t: V voice-trigger · E event-trigger · A action-only · p: S standard / U upgraded */
 const LIVE = [
   {id:"agi-01",t:"V",p:"S",sc:"INT. HOTEL SUITE — NIGHT",pg:3,trig:"AGI.",line:"Yes, PD.",fx:"on “Erase it.” — blackout + wipe-footage SFX"},
   {id:"agi-02",t:"E",p:"S",sc:"INT. PD'S BEDROOM — MORNING",pg:4,trig:"PD wakes — alarm cuts off",line:"Good morning, PD."},
@@ -797,6 +835,8 @@ const liveEl = document.getElementById('agilive');
 const termEl = document.getElementById('term');
 const tLog = document.getElementById('tLog');
 const tFace = document.getElementById('tFace');
+const tVid = document.getElementById('tVid');
+const tFaceWrap = document.getElementById('tFaceWrap');
 const tModeEl = document.getElementById('tMode');
 const tNextEl = document.getElementById('tNext');
 const tStatsEl = document.getElementById('tStats');
@@ -834,13 +874,36 @@ function ensureGraph(){
     fdata = new Uint8Array(ana.frequencyBinCount);
   }catch(e){ ana = null; }
 }
-function playCue(id){
+/* video cue support: play assets/video/agi-XX.mp4 if it exists, else audio + static face */
+const vidOK = {};   /* id -> true/false once probed */
+function probeVideo(id){
+  if(id in vidOK) return Promise.resolve(vidOK[id]);
+  return fetch(`assets/video/${id}.mp4`, {method:'HEAD'})
+    .then(r=>{ vidOK[id] = r.ok; return r.ok; })
+    .catch(()=>{ vidOK[id] = false; return false; });
+}
+function playCueVideo(id){
+  return new Promise(res=>{
+    let settled = false, guard;
+    const fin = ()=>{ if(settled) return; settled = true; clearTimeout(guard);
+      tVid.style.display = 'none'; tVid.pause(); res(); };
+    tVid.src = `assets/video/${id}.mp4`;
+    tVid.style.display = 'block';
+    tVid.onended = fin; tVid.onerror = fin;
+    const chk = ()=>{
+      if(tVid.readyState < 2 && tVid.currentTime === 0) fin();
+      else guard = setTimeout(chk, 4000);
+    };
+    guard = setTimeout(chk, 4000);
+    tVid.play().catch(fin);
+  });
+}
+function playCueAudio(id){
   return new Promise(res=>{
     let settled = false, guard;
     const fin = ()=>{ if(settled) return; settled = true; clearTimeout(guard); res(); };
     player.src = `assets/audio/${id}.mp3`;
     player.onended = fin; player.onerror = fin;
-    /* watchdog: if audio never starts (blocked / offline), don't freeze the console */
     const chk = ()=>{
       if(player.readyState < 2 && player.currentTime === 0) fin();
       else guard = setTimeout(chk, 4000);
@@ -853,11 +916,12 @@ const vizEl = document.getElementById('viz');
 vizEl.innerHTML = Array.from({length:16},()=>'<i></i>').join('');
 const bars = [...vizEl.children];
 (function vloop(){
+  const active = (!player.paused) || (tVid.style.display==='block' && !tVid.paused);
   if(!player.paused && ana){
     ana.getByteFrequencyData(fdata);
-    bars.forEach((b,i)=>{ b.style.height = Math.max(3, (fdata[i+2]||0)/255*34) + 'px'; });
-  } else if(!player.paused){
-    bars.forEach(b=>{ b.style.height = (3+Math.random()*28) + 'px'; });
+    bars.forEach((b,i)=>{ b.style.height = Math.max(3, (fdata[i+2]||0)/255*30) + 'px'; });
+  } else if(active){
+    bars.forEach(b=>{ b.style.height = (3+Math.random()*26) + 'px'; });
   } else {
     bars.forEach(b=>{ b.style.height = '3px'; });
   }
@@ -865,11 +929,11 @@ const bars = [...vizEl.children];
 })();
 
 function setMode(upg){
-  liveEl.classList.toggle('upg', upg);
-  tModeEl.textContent = upg ? 'AGI_UPGRADED' : 'AGI_STANDARD';
+  document.body.classList.toggle('crazy', upg);
+  tModeEl.textContent = upg ? 'agi_upgraded' : 'agi_standard';
   tFace.src = upg ? 'assets/agi-avatar-upgraded.png' : 'assets/agi-avatar.png';
 }
-new Image().src = 'assets/agi-avatar-upgraded.png'; /* preload so the upgrade swap is instant */
+new Image().src = 'assets/agi-avatar-upgraded.png';
 function blackoutFx(){
   termEl.classList.remove('bo'); void termEl.offsetWidth;
   termEl.classList.add('bo');
@@ -879,11 +943,11 @@ function blackoutFx(){
 function syncLive(){
   const c = LIVE[L.i];
   tNextEl.innerHTML = c
-    ? `NEXT ▸ <span class="nid">${c.id}</span> · ${c.t==='V'?'PD says':'operator cue'}: <b>“${esc(c.trig)}”</b>`
-    : `END OF SCRIPT — all ${LIVE.length} cues fired.`;
+    ? `next ▸ <b>${c.id}</b> · ${c.t==='V'?'pd says':'operator cue'}: <b>“${esc(c.trig)}”</b>`
+    : `end of script — all ${LIVE.length} cues fired.`;
   tStatsEl.innerHTML =
     `cues fired <b>${L.i} / ${LIVE.length}</b><br>` +
-    `voice preset <b>${liveEl.classList.contains('upg')?'UPGRADED':'STANDARD'}</b><br>` +
+    `voice preset <b>${document.body.classList.contains('crazy')?'upgraded':'standard'}</b><br>` +
     `scene <b>p.${c?c.pg:'—'}</b>`;
   [...railEl.children].forEach((r,j)=>{
     r.classList.toggle('done', j < L.i);
@@ -893,8 +957,8 @@ function syncLive(){
 }
 function armCue(j){
   if(L.busy) return;
-  L.i = j; setMode(j > UPG_AT); /* arming agi-25 itself stays standard — the fire() announces the switch */
-  lg('ln-sys','&gt; armed ' + LIVE[j].id + ' · ' + esc(LIVE[j].sc));
+  L.i = j; setMode(j > UPG_AT);
+  lg('ln-sys','&gt; armed ' + LIVE[j].id + ' · ' + esc(LIVE[j].sc.toLowerCase()));
   syncLive();
   const row = railEl.children[j];
   if(row) row.scrollIntoView({block:'nearest'});
@@ -903,30 +967,31 @@ function armCue(j){
 async function fire(){
   if(L.busy || !L.booted) return;
   if(L.i >= LIVE.length){
-    lg('ln-sys','&gt; END OF SCRIPT. [ reset ] to run again.');
+    lg('ln-sys','&gt; end of script. [reset] to run again.');
     return;
   }
   L.busy = true;
   ensureGraph();
   if(actx && actx.state === 'suspended') actx.resume();
   const c = LIVE[L.i];
-  if(c.p === 'U' && !liveEl.classList.contains('upg')){
+  if(c.p === 'U' && !document.body.classList.contains('crazy')){
     setMode(true);
-    lg('ln-up','&gt;&gt; SYSTEM: FULL OVERHAUL ACCEPTED — voice preset → AGI_UPGRADED');
+    lg('ln-up','&gt;&gt; system: full overhaul accepted — voice preset → agi_upgraded');
   }
-  const pfx = c.t==='V' ? '<span class="pfx">PD&gt;</span> “'+esc(c.trig)+'”'
-            : c.t==='E' ? '<span class="pfx ev">EVENT&gt;</span> '+esc(c.trig)
-            : '<span class="pfx ev">ACTION&gt;</span> “'+esc(c.trig)+'”';
+  const pfx = c.t==='V' ? '<span class="pfx">pd&gt;</span> “'+esc(c.trig)+'”'
+            : c.t==='E' ? '<span class="pfx">event&gt;</span> '+esc(c.trig)
+            : '<span class="pfx">action&gt;</span> “'+esc(c.trig)+'”';
   lg('ln-pd', pfx);
   if(c.line){
-    const row = lg(c.p==='U' ? 'ln-agi u' : 'ln-agi',
-      '<span class="pfx">AGI&gt;</span> <span class="tw"></span>');
-    tFace.classList.add('talk');
-    await Promise.all([ playCue(c.id), typeOut(row.querySelector('.tw'), c.line) ]);
-    tFace.classList.remove('talk');
+    const row = lg('ln-agi','<span class="pfx">agi&gt;</span> <span class="tw"></span>');
+    tFaceWrap.classList.add('talk');
+    const useVid = await probeVideo(c.id);
+    const media = useVid ? playCueVideo(c.id) : playCueAudio(c.id);
+    await Promise.all([ media, typeOut(row.querySelector('.tw'), c.line) ]);
+    tFaceWrap.classList.remove('talk');
   }
   if(c.fx){
-    lg('ln-fx','&gt;&gt; FX: ' + esc(c.fx));
+    lg('ln-fx','&gt;&gt; fx: ' + esc(c.fx));
     if(/blackout|power goes out/i.test(c.fx)) blackoutFx();
   }
   L.i++; L.busy = false;
@@ -934,33 +999,33 @@ async function fire(){
 }
 
 const BOOT = [
-  '&gt; AGI CORE v2.8 — initializing…',
-  '&gt; voice model loaded: ElevenLabs · “AGI — Narcissistic Insanity”',
+  '&gt; agi core v2.8 — initialisation...',
+  '&gt; voice model loaded: elevenlabs · “agi — narcissistic insanity”',
   '&gt; cue bank: 39 voice cues · 5 action triggers · script order',
-  '&gt; visual ref: Higgsfield Soul 2.0 character sheet',
-  '&gt; preset: AGI_STANDARD · upgrade point: agi-25 (p.51)',
-  '&gt; awaiting operator. press [SPACE] or tap [ FIRE CUE ].',
+  '&gt; visual ref: higgsfield soul 2.0 character sheet',
+  '&gt; preset: agi_standard · upgrade point: agi-25 (p.51)',
+  '&gt; awaiting operator. press [space] or tap [fire cue].',
 ];
 async function bootLive(){
   if(L.booted) return;
   L.booted = true;
   for(const line of BOOT){
     lg('ln-sys', line);
-    await new Promise(r=>setTimeout(r, 260));
+    await new Promise(r=>setTimeout(r, 240));
   }
   syncLive();
 }
 function resetLive(){
-  player.pause(); L.busy = false; L.i = 0; L.booted = false;
+  player.pause(); tVid.pause(); tVid.style.display='none';
+  L.busy = false; L.i = 0; L.booted = false;
   tLog.innerHTML = ''; setMode(false);
   bootLive();
 }
 
-/* rail + scene selector */
 railEl.innerHTML = LIVE.map((c,j)=>`
   <div class="r" data-j="${j}" title="${esc(c.sc)} · p.${c.pg}">
     <span class="rid">${c.id.replace('agi-','')}</span>
-    <span class="rtyp">${c.t==='V'?'VOICE':c.t==='E'?'EVENT':'ACTION'}</span>
+    <span class="rtyp">${c.t==='V'?'voice':c.t==='E'?'event':'action'}</span>
     <span class="rtrig">${esc(c.trig)}${c.line?' → '+esc(c.line):''}</span>
   </div>`).join('');
 railEl.addEventListener('click', e=>{
@@ -970,7 +1035,7 @@ railEl.addEventListener('click', e=>{
 sceneSel.innerHTML = LIVE
   .map((c,j)=>({sc:c.sc, j}))
   .filter((s,i,a)=>i===0 || a[i-1].sc!==s.sc)
-  .map(s=>`<option value="${s.j}">${esc(s.sc)}</option>`).join('');
+  .map(s=>`<option value="${s.j}">${esc(s.sc.toLowerCase())}</option>`).join('');
 sceneSel.addEventListener('change', ()=>armCue(+sceneSel.value));
 
 document.getElementById('fireBtn').addEventListener('click', fire);
@@ -981,10 +1046,6 @@ document.addEventListener('keydown', e=>{
   if(e.code === 'Space' || e.key === ' ' || e.code === 'Enter' || e.key === 'Enter'){
     e.preventDefault(); fire();
   }
-});
-document.getElementById('tabrow').addEventListener('click', e=>{
-  const b = e.target.closest('.tab');
-  if(b && b.dataset.tab === 'agilive') bootLive();
 });
 if(liveEl.classList.contains('active')) bootLive();
 syncLive();
